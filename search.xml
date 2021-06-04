@@ -1,49 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ruom0&#39;s daily</title>
-    <url>/2021/06/03/ruom0_daily/</url>
-    <content><![CDATA[<h2 id="2021年">2021年</h2>
-<h3 id="2021-06-03">2021-06-03</h3>
-<ul>
-<li>记录了csapp的2.1的内容</li>
-<li>pwnable.kr补了fd、collision、bof、flag、passcode的自动脚本和内容</li>
-</ul>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>用Pyenv安装多版本Python</title>
-    <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
-    <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
-<p>前提：本机已有Python以及pip</p>
-<p>打开PowerShell，输入以下命令安装</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">pip install pyenv<span class="literal">-win</span> -<span class="literal">-target</span> <span class="variable">$HOME</span>\.pyenv</span><br></pre></td></tr></table></figure>
-<p>安装完成后输入以下命令添加到环境变量</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;PYENV&#x27;</span>,<span class="variable">$env:USERPROFILE</span> + <span class="string">&quot;\.pyenv\pyenv-win\&quot;</span>,<span class="string">&quot;User&quot;</span>)</span><br><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;path&#x27;</span>, <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\bin;&quot;</span> + <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\shims;&quot;</span> + <span class="variable">$env:Path</span>,<span class="string">&quot;User&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="Pyenv常见使用方法">Pyenv常见使用方法</h2>
-<ul>
-<li><code>pyenv commands</code>：列出pyenv所有的命令</li>
-<li><code>pyenv local [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前目录以及其子目录。</li>
-<li><code>pyenv global [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令影响全局。</li>
-<li><code>pyenv shell [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前会话。</li>
-<li><code>pyenv install &lt;version&gt;</code>：安装某个版本的Python。</li>
-<li><code>pyenv install -l</code>：列出所有可安装的Python版本。</li>
-<li><code>pyenv uninstall &lt;version&gt;</code>：卸载某个版本的Python。</li>
-<li><code>pyenv version</code>：列出当前正在使用的Python版本以及其文件所在目录。</li>
-<li><code>pyenv versions</code>：列出所有已安装的Python版本以及其文件所在目录。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-      <tags>
-        <tag>pyenv</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>第1章 计算机系统漫游</title>
     <url>/2021/05/28/csapp/%E7%AC%AC1%E7%AB%A0_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</url>
     <content><![CDATA[<h2 id="程序编译过程">程序编译过程</h2>
@@ -123,6 +80,20 @@
       <tags>
         <tag>csapp</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>ruom0&#39;s daily</title>
+    <url>/2021/06/03/ruom0_daily/</url>
+    <content><![CDATA[<h2 id="2021年">2021年</h2>
+<h3 id="2021-06-03">2021-06-03</h3>
+<ul>
+<li>记录了csapp的2.1的内容</li>
+<li>pwnable.kr补了fd、collision、bof、flag、passcode的自动脚本和内容</li>
+</ul>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
   </entry>
   <entry>
     <title>第2章 信息的表示和处理</title>
@@ -420,6 +391,35 @@
       </tags>
   </entry>
   <entry>
+    <title>用Pyenv安装多版本Python</title>
+    <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
+    <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
+<p>前提：本机已有Python以及pip</p>
+<p>打开PowerShell，输入以下命令安装</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">pip install pyenv<span class="literal">-win</span> -<span class="literal">-target</span> <span class="variable">$HOME</span>\.pyenv</span><br></pre></td></tr></table></figure>
+<p>安装完成后输入以下命令添加到环境变量</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;PYENV&#x27;</span>,<span class="variable">$env:USERPROFILE</span> + <span class="string">&quot;\.pyenv\pyenv-win\&quot;</span>,<span class="string">&quot;User&quot;</span>)</span><br><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;path&#x27;</span>, <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\bin;&quot;</span> + <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\shims;&quot;</span> + <span class="variable">$env:Path</span>,<span class="string">&quot;User&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Pyenv常见使用方法">Pyenv常见使用方法</h2>
+<ul>
+<li><code>pyenv commands</code>：列出pyenv所有的命令</li>
+<li><code>pyenv local [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前目录以及其子目录。</li>
+<li><code>pyenv global [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令影响全局。</li>
+<li><code>pyenv shell [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前会话。</li>
+<li><code>pyenv install &lt;version&gt;</code>：安装某个版本的Python。</li>
+<li><code>pyenv install -l</code>：列出所有可安装的Python版本。</li>
+<li><code>pyenv uninstall &lt;version&gt;</code>：卸载某个版本的Python。</li>
+<li><code>pyenv version</code>：列出当前正在使用的Python版本以及其文件所在目录。</li>
+<li><code>pyenv versions</code>：列出所有已安装的Python版本以及其文件所在目录。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>pyenv</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>bof</title>
     <url>/2021/06/03/pwnable/Toddlers_Bottle/bof/</url>
     <content><![CDATA[<h2 id="原题内容">原题内容</h2>
@@ -467,6 +467,25 @@
       </tags>
   </entry>
   <entry>
+    <title>flag</title>
+    <url>/2021/06/03/pwnable/Toddlers_Bottle/flag/</url>
+    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Papa brought me a packed present! let&#x27;s open it.</span><br><span class="line"></span><br><span class="line">Download : http://pwnable.kr/bin/flag</span><br><span class="line"></span><br><span class="line">This is reversing task. all you need is binary</span><br></pre></td></tr></table></figure>
+<p>题目附件：<a href="/files/pwnable/toddlers_bottle/flag">点我下载</a></p>
+<h2 id="题目分析">题目分析</h2>
+<p>直接给了一个附件，那就是在文件里找flag或者想办法搞到flag了。</p>
+<p>用ida-64打开flag，发现只有4个函数，Shift + F12找到关键词<code>//upx.sf.net $\n</code>，说明该文件使用upx加壳了，那就先脱壳。这边用UPXShell来进行脱壳。<a href="/files/tools/UPXShell.exe">点我下载UPXShell</a></p>
+<p>脱壳后再打开，Shift + F12先搜索&quot;flag&quot;试试，直接搜到flag。</p>
+]]></content>
+      <categories>
+        <category>pwnable</category>
+      </categories>
+      <tags>
+        <tag>pwnable</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>fd</title>
     <url>/2021/06/03/pwnable/Toddlers_Bottle/fd/</url>
     <content><![CDATA[<h2 id="原题内容">原题内容</h2>
@@ -498,25 +517,39 @@
 <h2 id="题目分析">题目分析</h2>
 <p>获取flag需要过5关，类似拆炸弹游戏，需要5步才能拆除炸弹。</p>
 <h3 id="Stage-1">Stage 1</h3>
-]]></content>
-      <categories>
-        <category>pwnable</category>
-      </categories>
-      <tags>
-        <tag>pwnable</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>flag</title>
-    <url>/2021/06/03/pwnable/Toddlers_Bottle/flag/</url>
-    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Papa brought me a packed present! let&#x27;s open it.</span><br><span class="line"></span><br><span class="line">Download : http://pwnable.kr/bin/flag</span><br><span class="line"></span><br><span class="line">This is reversing task. all you need is binary</span><br></pre></td></tr></table></figure>
-<p>题目附件：<a href="/files/pwnable/toddlers_bottle/flag">点我下载</a></p>
-<h2 id="题目分析">题目分析</h2>
-<p>直接给了一个附件，那就是在文件里找flag或者想办法搞到flag了。</p>
-<p>用ida-64打开flag，发现只有4个函数，Shift + F12找到关键词<code>//upx.sf.net $\n</code>，说明该文件使用upx加壳了，那就先脱壳。这边用UPXShell来进行脱壳。<a href="/files/tools/UPXShell.exe">点我下载UPXShell</a></p>
-<p>脱壳后再打开，Shift + F12先搜索&quot;flag&quot;试试，直接搜到flag。</p>
+<p>第1步要求如下：</p>
+<ol>
+<li>传入长度为100个字符。</li>
+<li>字符&quot;A&quot;所代表ascii值位置的字符为<code>\x00</code>，字符&quot;B&quot;所代表位置的字符为<code>\x20\x0a\x0d</code></li>
+</ol>
+<p>这步比较简单，直接构造就行，代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">argv = [<span class="string">&#x27;a&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>)]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage1</span>():</span></span><br><span class="line">    argv[<span class="built_in">ord</span>(<span class="string">&#x27;A&#x27;</span>)] = <span class="string">&#x27;\x00&#x27;</span></span><br><span class="line">    argv[<span class="built_in">ord</span>(<span class="string">&#x27;B&#x27;</span>)] = <span class="string">&#x27;\x20\x0a\x0d&#x27;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="Stage-2">Stage 2</h3>
+<p>第2步要求如下：</p>
+<ol>
+<li>stdin的内容为<code>\x00\x0a\x00\xff</code></li>
+<li>stderr的内容为<code>\x00\x0a\x02\xff</code></li>
+</ol>
+<p>若直接在process中添加<code>stdin = '\x00\x0a\x00\xff'和stderr = '\x00\x0a\x02\xff'</code>会产生报错，因为这里需要使用管道（pipe）。</p>
+<p>创建管道的方法为：<code>r, w = os.pipe()</code>。</p>
+<p>然后在管道中写入我们的数据即可。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">r_in, w_in = os.pipe()</span><br><span class="line">r_err, w_err = os.pipe()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage2</span>():</span></span><br><span class="line">    os.write(w_in, <span class="string">b&#x27;\x00\x0a\x00\xff&#x27;</span>)</span><br><span class="line">    os.write(w_err, <span class="string">b&#x27;\x00\x0a\x02\xff&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="Stage-3">Stage 3</h3>
+<p>第3步是获取环境变量<code>\xde\xad\xbe\xef</code>的值，如果它等于<code>\xca\xfe\xba\xbe</code>则通过。</p>
+<p>环境变量是一个字典，因此可以构造一个字典传入。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">env = &#123;&#125;</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage3</span>():</span></span><br><span class="line">    env[<span class="string">b&#x27;\xde\xad\xbe\xef&#x27;</span>] = <span class="string">b&#x27;\xca\xfe\xba\xbe&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="Stage-4">Stage 4</h3>
+<p>第4步是从当前目录读入一个文件名是<code>\x0a</code>的文件，读4个字符判断是否为<code>\x00\x00\x00\x00</code>，那么直接创建文件写入即可。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage4</span>():</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;\x0a&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(<span class="string">b&#x27;\x00\x00\x00\x00&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="Stage-5">Stage 5</h3>
+<p>第5步是监听本机的端口，端口号是<code>argv</code>中字符&quot;C&quot;的ascii码位置所在的文本。若收到字符串<code>\xde\xad\xbe\xef</code>则通过。代码如下：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> socket, time</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage5</span>():</span></span><br><span class="line">    s = socket.socket()</span><br><span class="line">    s.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">13145</span>))</span><br><span class="line">    s.send(<span class="string">b&#x27;\xde\xad\xbe\xef&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>最终脚本源码：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">import</span> os, socket, time</span><br><span class="line"></span><br><span class="line">argv = [<span class="string">&#x27;a&#x27;</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>)]</span><br><span class="line">r_in, w_in = os.pipe()</span><br><span class="line">r_err, w_err = os.pipe()</span><br><span class="line">env = &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage1</span>():</span></span><br><span class="line">    argv[<span class="built_in">ord</span>(<span class="string">&#x27;A&#x27;</span>)] = <span class="string">&#x27;\x00&#x27;</span></span><br><span class="line">    argv[<span class="built_in">ord</span>(<span class="string">&#x27;B&#x27;</span>)] = <span class="string">&#x27;\x20\x0a\x0d&#x27;</span></span><br><span class="line">    argv[<span class="built_in">ord</span>(<span class="string">&#x27;C&#x27;</span>)] = <span class="string">&#x27;13145&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage2</span>():</span></span><br><span class="line">    os.write(w_in, <span class="string">b&#x27;\x00\x0a\x00\xff&#x27;</span>)</span><br><span class="line">    os.write(w_err, <span class="string">b&#x27;\x00\x0a\x02\xff&#x27;</span>)</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage3</span>():</span></span><br><span class="line">    env[<span class="string">b&#x27;\xde\xad\xbe\xef&#x27;</span>] = <span class="string">b&#x27;\xca\xfe\xba\xbe&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage4</span>():</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;\x0a&#x27;</span>, <span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(<span class="string">b&#x27;\x00\x00\x00\x00&#x27;</span>)</span><br><span class="line">        </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">stage5</span>():</span></span><br><span class="line">    s = socket.socket()</span><br><span class="line">    s.connect((<span class="string">&#x27;127.0.0.1&#x27;</span>, <span class="number">13145</span>))</span><br><span class="line">    s.send(<span class="string">b&#x27;\xde\xad\xbe\xef&#x27;</span>)</span><br><span class="line">    </span><br><span class="line">stage1()</span><br><span class="line">stage2()</span><br><span class="line">stage3()</span><br><span class="line">stage4()</span><br><span class="line"></span><br><span class="line">p = process(executable = <span class="string">&#x27;./input&#x27;</span>, argv = argv, stdin = r_in, stderr = r_err, env = env)</span><br><span class="line"></span><br><span class="line">time.sleep(<span class="number">0.5</span>)</span><br><span class="line">stage5()</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+<p>由于这个脚本需要传入argv、env、stdin、stderr并且还需要用socket发送消息，因此将脚本上传至服务器比较方便。</p>
+<p>在pwnable.kr服务器中，/tmp目录权限为<code>rwxrwx-wt</code>，所以我们可以在/tmp下创建自己的目录，将脚本上传到该目录中。</p>
+<p>由于input和flag文件都在/home/input2中，所以可以在自己创建的目录下做这两个文件的软链接来完成后续操作。</p>
 ]]></content>
       <categories>
         <category>pwnable</category>
