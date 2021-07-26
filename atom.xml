@@ -6,7 +6,7 @@
   <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
   <link href="https://www.ruomo.fun/"/>
-  <updated>2021-06-21T07:54:59.138Z</updated>
+  <updated>2021-07-26T09:06:13.313Z</updated>
   <id>https://www.ruomo.fun/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ubuntu18.04美化</title>
+    <link href="https://www.ruomo.fun/2021/07/26/others/ubuntu18.04%E7%BE%8E%E5%8C%96/"/>
+    <id>https://www.ruomo.fun/2021/07/26/others/ubuntu18.04%E7%BE%8E%E5%8C%96/</id>
+    <published>2021-07-26T08:00:57.953Z</published>
+    <updated>2021-07-26T09:06:13.313Z</updated>
+    
+    <content type="html"><![CDATA[<p>本教程基于aliyun下载的Ubuntu18.04.5镜像制作，默认语言为英语。</p><h2 id="前置准备">前置准备</h2><p>如果已经做过可以跳过该节。</p><h3 id="更换apt源">更换apt源</h3><p>打开终端窗口，运行以下命令：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak</span><br><span class="line">sudo gedit /etc/apt/sources.list</span><br></pre></td></tr></table></figure><p>在打开的gedit窗口中将内容清空并替换为以下内容：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse</span><br><span class="line"></span><br><span class="line">deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br><span class="line">deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse</span><br></pre></td></tr></table></figure><p>按下<code>Ctrl + S</code>保存后关闭gedit窗口，在终端中运行以下命令更新：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade</span><br></pre></td></tr></table></figure><h3 id="中文安装">中文安装</h3><ol><li>打开Settings，在&quot;Region &amp; Language&quot;中单击&quot;Manage Installed Languages&quot;</li><li>在弹出的Languages Support窗口中单击&quot;Install / Remove Languages&quot;</li><li>勾选&quot;Chinese (simplified)“，单击&quot;Apply”</li><li>将语言列表下的&quot;汉语（中国）&quot;拖到列表最上方并保存</li><li>注销或者重启系统</li></ol><blockquote><p>为了方便使用，重启后询问的标准文件夹的语言更改选择”保留旧的名称“并勾选”不要再次询问我“。</p></blockquote><h2 id="Ubuntu18-04美化">Ubuntu18.04美化</h2><h3 id="gnome相关工具安装">gnome相关工具安装</h3><p>依次运行以下命令安装tweak以及其他相关工具：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install gnome-tweak-tool</span><br><span class="line">sudo apt-get install gnome-shell-extensions</span><br><span class="line"></span><br><span class="line">// dock相关插件，可装可不装，任选其一即可</span><br><span class="line">sudo apt-get install gnome-shell-extension-dashtodock</span><br><span class="line">sudo apt install plank</span><br></pre></td></tr></table></figure><p>安装完成后注销或者重启系统。</p><h3 id="主题美化">主题美化</h3><ol><li>在应用列表中搜索<code>tweak</code>并打开（如果安装了中文输入法也可以搜索<code>优化</code>）</li><li>在拓展中打开<code>User themes</code>的开关</li><li>前往https://www.gnome-look.org/寻找心仪的主题并下载相应压缩包（左侧分类为GTK2 Themes或者GTK3/4 ）Themes）</li><li>将压缩包中的文件解压出来（有个可能一个压缩包包含多个主题目录），选择合适的主题目录用<code>sudo cp -r 主题目录 /usr/share/themes</code>命令将其拷贝到主题目录中</li><li>重新打开<code>tweak</code>，就可以在<strong>外观</strong>中修改<strong>应用程序</strong>和<strong>Shell</strong>。</li></ol><blockquote><p>鼠标光标和系统图标的修改方式和上述相似</p><p>鼠标光标目录和系统图标目录均为/usr/share/icons</p></blockquote><h3 id="登录界面美化">登录界面美化</h3><ol><li>运行<code>sudo cp /etc/alternatives/gdm3.css /etc/alternatives/gdm3.css.bak</code>备份gdm3.css文件</li><li>运行<code>sudo gedit /etc/alternatives/gdm3.css</code>打开gdm3.css</li><li>找到<code>lockDialogGroup</code>，修改<code>background</code>的url括号中内容为自己的图片，格式形如<code>file:///home/abai/background.jpg</code></li></ol><blockquote><p>最好改成以下这样的……不然……懂得都懂</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#lockDialogGroup &#123;</span><br><span class="line">  background: #2c001e url(file:///home/abai/background.jpg);         </span><br><span class="line">  background-repeat: no-repeat;</span><br><span class="line">  background-size: cover;</span><br><span class="line">  background-position: center; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></blockquote>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;本教程基于aliyun下载的Ubuntu18.04.5镜像制作，默认语言为英语。&lt;/p&gt;
+&lt;h2 id=&quot;前置准备&quot;&gt;前置准备&lt;/h2&gt;
+&lt;p&gt;如果已经做过可以跳过该节。&lt;/p&gt;
+&lt;h3 id=&quot;更换apt源&quot;&gt;更换apt源&lt;/h3&gt;
+&lt;p&gt;打开终端窗口，运行以下命令：&lt;/</summary>
+      
+    
+    
+    
+    <category term="others" scheme="https://www.ruomo.fun/categories/others/"/>
+    
+    
+    <category term="ubuntu" scheme="https://www.ruomo.fun/tags/ubuntu/"/>
+    
+  </entry>
   
   <entry>
     <title>pwn使用指定libc运行程序</title>
