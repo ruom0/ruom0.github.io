@@ -280,6 +280,95 @@
       </tags>
   </entry>
   <entry>
+    <title>work_day1</title>
+    <url>/2021/07/28/work/day1/</url>
+    <content><![CDATA[<h2 id="虚拟机环境配置">虚拟机环境配置</h2>
+<blockquote>
+<p>虚拟机系统为ubuntu 18.04.5，只安装了Python3</p>
+</blockquote>
+<h3 id="pwntools安装">pwntools安装</h3>
+<ol>
+<li>执行命令 <code>sudo apt install python3-pip</code> 安装 pip</li>
+<li>执行命令 <code>pip install pwntools</code> 安装 pwntools</li>
+</ol>
+<h3 id="pwndbg及peda安装">pwndbg及peda安装</h3>
+<p>从<a href="https://github.com/pwndbg/pwndbg">pwndbg</a>以及<a href="https://github.com/longld/peda">peda</a>下载两个工具的压缩包，将它们都解压在用户目录下。</p>
+<p><code>cd pwndbg</code>进入pwndbg的目录，执行命令<code>./setup.sh</code>，脚本运行完成后执行<code>gdb</code>。（这边遇到一个不知道为什么的问题，gdb进入后没有变pwndbg，查看了一下.gdbinit文件发现pwndbg的gdbinit.py文件没有写进去，自己手动加了一行<code>source ~/pwndbg/gdbinit.py</code>）</p>
+<p>执行命令<code>&quot;source ~/peda/peda.py&quot; &gt;&gt; ~/.gdbinit</code>将peda的启动方式写进去。</p>
+<blockquote>
+<p>更换pwndbg和peda的方法为将另一个的source给注释掉，如果两个同时存在则只会启动第一行所指定的插件。</p>
+</blockquote>
+<h3 id="LibcSearcher安装">LibcSearcher安装</h3>
+<p>从<a href="https://github.com/lieanu/LibcSearcher">LibcSearcher</a>下载压缩包解压，进入目录中执行<code>sudo python setup.py develop</code>即可。</p>
+<h3 id="ROPgadget安装">ROPgadget安装</h3>
+<p>从<a href="https://github.com/JonathanSalwan/ROPgadget">ROPgadget</a>下载压缩包解压，进入目录中依次执行以下命令即可。</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo pip install capstone</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure>
+<p>安装完成后运行报错<code>pkg_resources.ResolutionError: Script 'scripts/ROPgadget' not found in metadata at '/home/abai/.local/lib/python3.6/site-packages/ROPGadget-6.6.dist-info'</code></p>
+<p>解决方法：执行命令<code>sudo cp -r scripts /home/abai/.local/lib/python3.6/site-packages/ROPGadget-6.6.dist-info</code></p>
+<h3 id="glibc-all-in-one安装">glibc-all-in-one安装</h3>
+<p>从<a href="https://github.com/matrix1001/glibc-all-in-one">glibc-all-in-one</a>下载解压即可。</p>
+<h3 id="patchelf安装">patchelf安装</h3>
+<p>从<a href="https://github.com/NixOS/patchelf">patchelf</a>下载解压，进入目录中，依次执行以下命令</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">./bootstrap.sh</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>在执行第一行命令时遇到报错<code>./bootstrap.sh: 2: autoreconf: not found</code>，执行命令<code>sudo apt-get install autoconf automake libtool</code>解决。</p>
+<h2 id="Winafl安装">Winafl安装</h2>
+<ol>
+<li>
+<p>Visual Studio 2017安装</p>
+<p>由于官网比较难下载到，因此在其他网站下载了2017的安装包并安装。</p>
+</li>
+<li>
+<p>CMake安装</p>
+<p>从<a href="https://cmake.org/download/">CMake官网</a>下载CMake的msi文件安装</p>
+</li>
+<li>
+<p>DynamoRIO下载</p>
+<ol>
+<li>前往<a href="https://dynamorio.org/page_releases.html">DynamoRIO官网</a>下载压缩包</li>
+<li>解压压缩包</li>
+</ol>
+</li>
+<li>
+<p>打开<code>VS 2017的 x64_x86 交叉工具命令提示符</code>，进入winafl的build64目录中</p>
+</li>
+<li>
+<p>输入命令<code>cmake -G&quot;Visual Studio 15 2017&quot; -A x64 .. -DDynamoRIO_DIR=E:\DynamoRIO\cmake -DINTELPT=0 -DUSE_DRSYMS=1</code>，输出结果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">E:\winafl\build64&gt;cmake -G&quot;Visual Studio 15 2017&quot; -A x64 .. -DDynamoRIO_DIR=E:\DynamoRIO\cmake -DINTELPT=0 -DUSE_DRSYMS=1</span><br><span class="line">CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):</span><br><span class="line">  Compatibility with CMake &lt; 2.8.12 will be removed from a future version of</span><br><span class="line">  CMake.</span><br><span class="line"></span><br><span class="line">  Update the VERSION argument &lt;min&gt; value or use a ...&lt;max&gt; suffix to tell</span><br><span class="line">  CMake that the project does not need compatibility with older versions.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- Selecting Windows SDK version 10.0.17763.0 to target Windows 10.0.19042.</span><br><span class="line">-- The C compiler identification is MSVC 19.16.27045.0</span><br><span class="line">-- The CXX compiler identification is MSVC 19.16.27045.0</span><br><span class="line">-- Detecting C compiler ABI info</span><br><span class="line">-- Detecting C compiler ABI info - done</span><br><span class="line">-- Check for working C compiler: D:/Visual Studio IDE/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe - skipped</span><br><span class="line">-- Detecting C compile features</span><br><span class="line">-- Detecting C compile features - done</span><br><span class="line">-- Detecting CXX compiler ABI info</span><br><span class="line">-- Detecting CXX compiler ABI info - done</span><br><span class="line">-- Check for working CXX compiler: D:/Visual Studio IDE/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe - skipped</span><br><span class="line">-- Detecting CXX compile features</span><br><span class="line">-- Detecting CXX compile features - done</span><br><span class="line">-- Configuring done</span><br><span class="line">-- Generating done</span><br><span class="line">-- Build files have been written to: E:/winafl/build64</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>打开build64目录下的<code>WinAFL.sln</code>，单击菜单&quot;&quot;生成&quot;中的<strong>生成解决方案</strong></p>
+</li>
+<li>
+<p>右键右侧<strong>搜索解决方案资源管理器</strong>中的<code>afl-fuzz</code>，选择<strong>设为启动项目</strong></p>
+</li>
+<li>
+<p>右键<code>afl-fuzz</code>，选择<strong>属性</strong>，将调试中的<strong>命令参数</strong>属性改为<code>-i input -o output -D E:\DynamoRIO\bin64 -t 20000 -- -coverage_module test.exe -fuzz_iterations 5000 -target_module test.exe -target_method main -nargs 2 -- test.exe @@</code></p>
+</li>
+<li>
+<p>修改工作目录为<code>$(ProjectDir)bin\Debug</code></p>
+</li>
+<li>
+<p>在&quot;调试属性&quot;–&gt;“C/C++”–&gt;&quot;常规&quot;中将<strong>调试信息格式</strong>属性改为<strong>用于&quot;编辑并继续&quot;的程序数据库(/ZI)</strong></p>
+</li>
+<li>
+<p>在&quot;调试属性&quot;–&gt;“C/C++”–&gt;&quot;优化&quot;中将<strong>优化</strong>属性改为<strong>已禁用(/Od)</strong></p>
+</li>
+<li>
+<p>在&quot;调试属性&quot;–&gt;“链接器”–&gt;&quot;调试&quot;中将<strong>生成调试信息</strong>属性改为<strong>生成调试信息(/DEBUG)</strong></p>
+</li>
+<li>
+<p>重新生成解决方案</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>work</category>
+      </categories>
+      <tags>
+        <tag>work</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>用Pyenv安装多版本Python</title>
     <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
     <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
