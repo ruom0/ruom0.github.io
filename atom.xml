@@ -6,7 +6,7 @@
   <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
   <link href="https://www.ruomo.fun/"/>
-  <updated>2021-07-28T10:47:20.567Z</updated>
+  <updated>2021-07-28T12:15:52.171Z</updated>
   <id>https://www.ruomo.fun/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>work_day2</title>
+    <link href="https://www.ruomo.fun/2021/07/28/work/day2/"/>
+    <id>https://www.ruomo.fun/2021/07/28/work/day2/</id>
+    <published>2021-07-28T12:13:24.732Z</published>
+    <updated>2021-07-28T12:15:52.171Z</updated>
+    
+    <content type="html"><![CDATA[<p>根据<a href="https://talosintelligence.com/vulnerability_reports/TALOS-2020-1192">TALOS-2020-1192</a>学习了PlanMaker 2021的1014修订版的溢出漏洞，分析了成因，在无尘师傅的帮助下定位了可能可以用于fuzz的函数。</p><h3 id="32位PlanMaker">32位PlanMaker</h3><blockquote><p>问题1：直接打开PlanMaker后打开自建的*.pmd文件，在Process Monitor的用户栈信息中没有PlanMaker对自身模块的调用；而直接打开自建的*.pmd文件后则可以在Process Monitor的用户栈信息中查看到PlanMaker对自身模块的调用信息。</p></blockquote><ul><li>PlanMaker.exe基地址<code>0xfb0000</code></li><li>PlanMaker.exe调用<code>CreateFile</code>和<code>ReadFile</code>的用户栈情况如下面两张图</li></ul><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/day2/CreateFile.png" alt="CreateFile"></p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/day2/ReadFile.png" alt="ReadFile"></p><ul><li>CreateFile_offset = <code>0xA72178</code></li><li>ReadFIle_offset = <code>0xA7140D</code></li><li>可能可以fuzz的函数<code>sub_6BAA00</code>，第三个参数为文件的绝对路径，前两个参数暂时未知，需要调试</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;根据&lt;a href=&quot;https://talosintelligence.com/vulnerability_reports/TALOS-2020-1192&quot;&gt;TALOS-2020-1192&lt;/a&gt;学习了PlanMaker 2021的1014修订版的溢出漏洞，分析了成因，在</summary>
+      
+    
+    
+    
+    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
+    
+    
+    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
+    
+  </entry>
   
   <entry>
     <title>work_day1</title>
