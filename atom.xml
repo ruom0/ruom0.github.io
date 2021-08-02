@@ -6,7 +6,7 @@
   <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
   <link href="https://www.ruomo.fun/"/>
-  <updated>2021-07-28T12:15:52.171Z</updated>
+  <updated>2021-08-02T07:39:48.554Z</updated>
   <id>https://www.ruomo.fun/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>work_day5</title>
+    <link href="https://www.ruomo.fun/2021/08/02/work/day5/"/>
+    <id>https://www.ruomo.fun/2021/08/02/work/day5/</id>
+    <published>2021-08-02T07:18:32.705Z</published>
+    <updated>2021-08-02T07:39:48.554Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="day3和day4做了啥">day3和day4做了啥</h2><p>上周（day3）的时候PlanMaker找到了另一个fuzz点，那个函数需要传入的参数有一个堆、文件名以及一个固定变化的参数a3，并且每次打开文件这个函数会被调用6次。后两个参数比较简单，文件名直接传就行，参数a3调试出来时固定的6个值，弄个数组就可以了。最重要的是第一个参数的堆。</p><p>在堆创建之后会被初始化，初始化大部分是给出一个固定的值，不过有两个块是调用了开发者自己写的两个函数，并且返回值是一个新的堆。本来想着直接调用初始化函数再传参就行，结果在初始化函数的那两个块中，调用到了全局变量用于防止线程冲突，因为我没有初始化变量于是就跑飞了。</p><p>在不断调试之后确认了好多个用于访问控制的结构体变量在内存中存储的值（因为所有的都是连起来在data段中存储的），于是基地址加上偏移的方式覆盖了这几个全局变量的值。再次调用初始化函数，还是跑飞了……</p><p>不断调试后发现他一直套娃，第一个函数返回的堆是另一个函数的返回的堆再做一堆操作之后的，跑飞是在那个函数中，跟进去发现是断在了malloc函数。最开始和师傅讨论觉得不可能啊，怎么可能会断在malloc函数，后来发现似乎没有重定位的符号表，所以程序跑的时候不知道这个函数是个啥，就跑飞了……商讨了下修复重定位的话工作量有点大，并且修复好之后还不一定跑起来，跑起来了又不一定能做fuzz点，于是向leader要求换了个方向QAQ。</p><h2 id="day5做了啥">day5做了啥</h2><p>由于双休，今天8月2日周一是day5，虽然今天还没结束，但是我已经预感到了我今天都做了啥……</p><p>早上的时候把自己写的harness编译了一下，跑的时候发现跑不动，于是去找问题，发现自己忘记extern了，笑死。在加了extern之后还是跑不动，问了另一位研究过这个的师傅，他让我先drrun插桩试一下，然后发现插桩插不上去，log里面问我offset。在听取师傅的建议之后，把打开文件的函数放到了另一个函数中而不是main，改了extern为自己写的fuzzme函数中，并且删除了检查文件是否支持的函数（因为在检查函数中就一定打开文件了，重复操作）。</p><p>吃了个午饭，然后编译了一下harness。harness编译之后用drrun去插桩测试正常跑了，于是我尝试用winafl-cmin.py去缩减样本，但是缩减的时候我nt忘记开脚本关闭License窗口了，电脑卡死N次（忘记开了N次笑死）。成功跑起来之后一直报错说pipe无法收到’P’，收到了’ '。</p><p>一顿胡搞瞎搞的操作之后还是不行，于是我更换DynamoRIO版本，原先用的最新版，好像是7.8，现在改成了用7.7版本的。在更换版本之后也没插桩什么去测试，直接winafl去跑了，一直timeout，不管是换文件还是怎么都是timeout。然后去插桩测试，也是timeout……</p><p>听取了师傅的建议后harness重新编译了一个32位的，winafl和DynamoRIO也用32位的，成功跑起来了。</p><p>截止到写文档时还在缩减样本……估计后面样本搞定后就是winafl跑等出crash了，没什么好说的……就这样。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;day3和day4做了啥&quot;&gt;day3和day4做了啥&lt;/h2&gt;
+&lt;p&gt;上周（day3）的时候PlanMaker找到了另一个fuzz点，那个函数需要传入的参数有一个堆、文件名以及一个固定变化的参数a3，并且每次打开文件这个函数会被调用6次。后两个参数比较简单，文件名</summary>
+      
+    
+    
+    
+    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
+    
+    
+    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
+    
+  </entry>
   
   <entry>
     <title>work_day2</title>
