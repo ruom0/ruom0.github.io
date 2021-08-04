@@ -6,7 +6,7 @@
   <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
   <link href="https://www.ruomo.fun/"/>
-  <updated>2021-08-02T07:39:48.554Z</updated>
+  <updated>2021-08-04T07:18:37.655Z</updated>
   <id>https://www.ruomo.fun/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>work_day7</title>
+    <link href="https://www.ruomo.fun/2021/08/04/work/day7/"/>
+    <id>https://www.ruomo.fun/2021/08/04/work/day7/</id>
+    <published>2021-08-04T07:12:20.659Z</published>
+    <updated>2021-08-04T07:18:37.655Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="day6和day7做了什么">day6和day7做了什么</h2><p>day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。</p><p>day7也就是今天，分析了一个crash，找到了哪里导致的错误赋值，但是依旧没有找到原因，被一个tifread.c卡住了，我都找不到这个文件！不过这个空指针调用的crash我感觉大概率是没办法利用的，当然不排除构造特定的tif文件可以控制他的值，不过好困难，因为他错误赋值赋值的是一个地址，最后又要从这个地址取值。因为原本的那个tif在赋值之后的地址取出来的值是全0所以就在movzx崩溃了……具体的分析过程看下面吧，第一次分析QAQ可能不到位。</p><h2 id="Image-Gear-Crash-17CDB9分析">Image Gear Crash 17CDB9分析</h2><p>crash附件：<a href="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/17CDB9">download</a></p><p>异常语句：<code>movzx eax,word ptr ds:[eax]</code></p><p>异常位置偏移：<code>0x17CDB9</code></p><p>导致原因：偏移为<code>0x17CDA8</code>处的函数（sub_10175610）调用返回地址+0x8位置内容为全0</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img01.png" alt="img1"></p><ul><li><p>sub_10175610</p><p>在直接跑一遍之后可以发现最后的eax只与edx和语句<code>lea eax,dword ptr ds:[edx+eax*4]</code>之前的eax有关，edx在传入时就是a1的地址，该语句之前的eax值固定为0xB8，因此只与传入参数a1的地址有关。</p></li></ul><p>回到异常语句所在的函数，可以看到sub_10175610传入的第一个参数为<code>*(_DWORD *)(v6 + 20)</code></p><p>该语句所在为LABEL_36，往上翻可以看到3处可以跳转到LABEL_36的地方。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img02.png" alt="img2"></p><p>在该crash中真正跳转到LABEL_36的为case 1部分。由ida反编译出来的内容可以知道v6代表的是edi，导致异常的函数传入的是<code>v6+0x14</code>地址处的值（edx），最后在eax中的的是<code>edx+0xB8</code>。</p><p>经过调试可以知道，在<code>edi+0x14</code>地址处的值在经过case1中的sub_10177A90和LABEL_36中的sub_100595B0后均未发生变化，继续往上找调用过edi（v6）的函数，最近的是同LABEL下偏移为<code>0x17CD8C</code>处的call，调试后发现经过该call后无变化。</p><p>接着可以看到sub_10176AC0调用了异常所在函数sub_1017CB60，在其中可以看到传入参数对应为Size的是v10，因此我们需要监控的位置就是<code>v10+0x14</code>的位置。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img03.png" alt="img3"></p><p>在偏移为<code>0x176B02</code>处下断点调试，单步得到此时v10保存地址，地址加<code>0x14</code>得到和后续函数有关内容，加入到监控中。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img04.png" alt="img4"></p><p>在调试中可以看到函数<code>sub_1000FBD0</code>将<code>v10+0x14</code>处的值初始化为全0。</p><p>继续单步调试可以发现在步过函数<code>sub_1017B050</code>后<code>v10+0x14</code>处的值发生了变化，在步过函数<code>sub_10175C80</code>后未发生变化，并且一直到触发异常都未发生变化。</p><p>因此导致异常的函数是<code>sub_1017B050</code>，在改函数处理时错误的修改了<code>v10+0x14</code>位置的值，最后导致函数异常。</p><p>重新调试步进进入<code>sub_1017B050</code>，在调试中可以看到在步过偏移为<code>0x17B0D5</code>处的call语句时监控的内存值发生了变化，对应命令为<code>v10 = sub_101750B0(v9, a2, *(_DOWRD *)(v7+24), &amp;unk_102B8780, 172, v7+20, v7+152, 1000)</code>，在该行指令处下断点，重新进行调试。</p><p>可以看到第3个、第6个、第7个参数和v7有关，并且第6个参数是<code>v7+0x14</code>，因此暂时先关注第6个参数。进入函数中可以看到有3处和a6有关。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img05.png" alt="img5"></p><p><code>call sub_10175150</code>的偏移为<code>0x175103</code>，下断点。步过之后a6即<code>v7+0x14</code>处的值发生变化。</p><p><code>call sub_10174C70</code>的偏移为<code>0x17511C</code>，<code>call sub_10174A00</code>的偏移为<code>0x17513C</code>，在这两处都下断点然后运行程序。</p><p>程序在运行后在<code>call sub_10174C70</code>语句停下，步过后a6的值没有发生变化；继续运行在<code>call sub_10174A00</code>语句停下，步过之后a6的值没有发生变化。因此错误数值在函数<code>sub_10175150</code>中被赋值给了a6。</p><p>最后定位到了错误赋值语句<code>*v9 = v13</code>，而v13是在上一行被赋值的，语句为<code>v13 = AF_memm_alloc(a2, 12 * (unsigned __int16)a5 + 712, (int)&quot;..\\..\\..\\..\\Common\\Formats\\tifread.c&quot;, 2693);</code></p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img06.png" alt="img6"></p><p>因为没有找到这个tifread.c……所以分析不下去了……</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;day6和day7做了什么&quot;&gt;day6和day7做了什么&lt;/h2&gt;
+&lt;p&gt;day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。&lt;/p&gt;
+&lt;p&gt;day7也就是今天</summary>
+      
+    
+    
+    
+    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
+    
+    
+    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
+    
+  </entry>
   
   <entry>
     <title>work_day5</title>

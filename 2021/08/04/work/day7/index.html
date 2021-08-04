@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>work_day7 | ruomo's blog</title><meta name="keywords" content="work"><meta name="author" content="ruomo"><meta name="copyright" content="ruomo"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="day6和day7做了什么 day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。 day7也就是今天，分析了一个crash，找到了哪里导致的错误赋值，但是依旧没有找到原因，被一个tifread.c卡住了，我都找不到这个文件！不过这个空指针调用的crash我感觉大概率是没办法利用的，当然不排除构造">
+<meta property="og:type" content="article">
+<meta property="og:title" content="work_day7">
+<meta property="og:url" content="https://www.ruomo.fun/2021/08/04/work/day7/index.html">
+<meta property="og:site_name" content="ruomo&#39;s blog">
+<meta property="og:description" content="day6和day7做了什么 day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。 day7也就是今天，分析了一个crash，找到了哪里导致的错误赋值，但是依旧没有找到原因，被一个tifread.c卡住了，我都找不到这个文件！不过这个空指针调用的crash我感觉大概率是没办法利用的，当然不排除构造">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg">
+<meta property="article:published_time" content="2021-08-04T07:12:20.659Z">
+<meta property="article:modified_time" content="2021-08-04T07:18:37.655Z">
+<meta property="article:author" content="ruomo">
+<meta property="article:tag" content="work">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg"><link rel="shortcut icon" href="/img/icon.svg"><link rel="canonical" href="https://www.ruomo.fun/2021/08/04/work/day7/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-right"},
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: true,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'work_day7',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-08-04 15:18:37'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="ruomo's blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="/img/avatar.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">11</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="http://docs.ruomo.fun/"><i class="fa-fw fas fa-book"></i><span> 文档</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="http://love.ruomo.fun/"><i class="fa-fw fas fa-heart"></i><span> 恋爱</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="not-top-img" id="page-header"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">ruomo's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="http://docs.ruomo.fun/"><i class="fa-fw fas fa-book"></i><span> 文档</span></a></div><div class="menus_item"><a class="site-page" target="_blank" rel="noopener" href="http://love.ruomo.fun/"><i class="fa-fw fas fa-heart"></i><span> 恋爱</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav></header><main class="layout" id="content-inner"><div id="post"><div id="post-info"><h1 class="post-title">work_day7</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-04T07:12:20.659Z" title="发表于 2021-08-04 15:12:20">2021-08-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-04T07:18:37.655Z" title="更新于 2021-08-04 15:18:37">2021-08-04</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/work/">work</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="work_day7"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div><article class="post-content" id="article-container"><h2 id="day6和day7做了什么">day6和day7做了什么</h2>
+<p>day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。</p>
+<p>day7也就是今天，分析了一个crash，找到了哪里导致的错误赋值，但是依旧没有找到原因，被一个tifread.c卡住了，我都找不到这个文件！不过这个空指针调用的crash我感觉大概率是没办法利用的，当然不排除构造特定的tif文件可以控制他的值，不过好困难，因为他错误赋值赋值的是一个地址，最后又要从这个地址取值。因为原本的那个tif在赋值之后的地址取出来的值是全0所以就在movzx崩溃了……具体的分析过程看下面吧，第一次分析QAQ可能不到位。</p>
+<h2 id="Image-Gear-Crash-17CDB9分析">Image Gear Crash 17CDB9分析</h2>
+<p>crash附件：<a target="_blank" rel="noopener" href="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/17CDB9">download</a></p>
+<p>异常语句：<code>movzx eax,word ptr ds:[eax]</code></p>
+<p>异常位置偏移：<code>0x17CDB9</code></p>
+<p>导致原因：偏移为<code>0x17CDA8</code>处的函数（sub_10175610）调用返回地址+0x8位置内容为全0</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img01.png" alt="img1"></p>
+<ul>
+<li>
+<p>sub_10175610</p>
+<p>在直接跑一遍之后可以发现最后的eax只与edx和语句<code>lea eax,dword ptr ds:[edx+eax*4]</code>之前的eax有关，edx在传入时就是a1的地址，该语句之前的eax值固定为0xB8，因此只与传入参数a1的地址有关。</p>
+</li>
+</ul>
+<p>回到异常语句所在的函数，可以看到sub_10175610传入的第一个参数为<code>*(_DWORD *)(v6 + 20)</code></p>
+<p>该语句所在为LABEL_36，往上翻可以看到3处可以跳转到LABEL_36的地方。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img02.png" alt="img2"></p>
+<p>在该crash中真正跳转到LABEL_36的为case 1部分。由ida反编译出来的内容可以知道v6代表的是edi，导致异常的函数传入的是<code>v6+0x14</code>地址处的值（edx），最后在eax中的的是<code>edx+0xB8</code>。</p>
+<p>经过调试可以知道，在<code>edi+0x14</code>地址处的值在经过case1中的sub_10177A90和LABEL_36中的sub_100595B0后均未发生变化，继续往上找调用过edi（v6）的函数，最近的是同LABEL下偏移为<code>0x17CD8C</code>处的call，调试后发现经过该call后无变化。</p>
+<p>接着可以看到sub_10176AC0调用了异常所在函数sub_1017CB60，在其中可以看到传入参数对应为Size的是v10，因此我们需要监控的位置就是<code>v10+0x14</code>的位置。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img03.png" alt="img3"></p>
+<p>在偏移为<code>0x176B02</code>处下断点调试，单步得到此时v10保存地址，地址加<code>0x14</code>得到和后续函数有关内容，加入到监控中。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img04.png" alt="img4"></p>
+<p>在调试中可以看到函数<code>sub_1000FBD0</code>将<code>v10+0x14</code>处的值初始化为全0。</p>
+<p>继续单步调试可以发现在步过函数<code>sub_1017B050</code>后<code>v10+0x14</code>处的值发生了变化，在步过函数<code>sub_10175C80</code>后未发生变化，并且一直到触发异常都未发生变化。</p>
+<p>因此导致异常的函数是<code>sub_1017B050</code>，在改函数处理时错误的修改了<code>v10+0x14</code>位置的值，最后导致函数异常。</p>
+<p>重新调试步进进入<code>sub_1017B050</code>，在调试中可以看到在步过偏移为<code>0x17B0D5</code>处的call语句时监控的内存值发生了变化，对应命令为<code>v10 = sub_101750B0(v9, a2, *(_DOWRD *)(v7+24), &amp;unk_102B8780, 172, v7+20, v7+152, 1000)</code>，在该行指令处下断点，重新进行调试。</p>
+<p>可以看到第3个、第6个、第7个参数和v7有关，并且第6个参数是<code>v7+0x14</code>，因此暂时先关注第6个参数。进入函数中可以看到有3处和a6有关。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img05.png" alt="img5"></p>
+<p><code>call sub_10175150</code>的偏移为<code>0x175103</code>，下断点。步过之后a6即<code>v7+0x14</code>处的值发生变化。</p>
+<p><code>call sub_10174C70</code>的偏移为<code>0x17511C</code>，<code>call sub_10174A00</code>的偏移为<code>0x17513C</code>，在这两处都下断点然后运行程序。</p>
+<p>程序在运行后在<code>call sub_10174C70</code>语句停下，步过后a6的值没有发生变化；继续运行在<code>call sub_10174A00</code>语句停下，步过之后a6的值没有发生变化。因此错误数值在函数<code>sub_10175150</code>中被赋值给了a6。</p>
+<p>最后定位到了错误赋值语句<code>*v9 = v13</code>，而v13是在上一行被赋值的，语句为<code>v13 = AF_memm_alloc(a2, 12 * (unsigned __int16)a5 + 712, (int)&quot;..\\..\\..\\..\\Common\\Formats\\tifread.c&quot;, 2693);</code></p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img06.png" alt="img6"></p>
+<p>因为没有找到这个tifread.c……所以分析不下去了……</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/work/">work</a></div><div class="post_share"><div class="addthis_inline_share_toolbox"></div><script src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-60b0acc25214e420" async="async"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/08/02/work/day5/"><img class="next-cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">work_day5</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/07/28/work/day1/" title="work_day1"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-28</div><div class="title">work_day1</div></div></a></div><div><a href="/2021/07/28/work/day2/" title="work_day2"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-28</div><div class="title">work_day2</div></div></a></div><div><a href="/2021/08/02/work/day5/" title="work_day5"><img class="cover" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/img/default.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-02</div><div class="title">work_day5</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#day6%E5%92%8Cday7%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">day6和day7做了什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Image-Gear-Crash-17CDB9%E5%88%86%E6%9E%90"><span class="toc-number">2.</span> <span class="toc-text">Image Gear Crash 17CDB9分析</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2021 By ruomo</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdn.jsdelivr.net/npm/pangu/dist/browser/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (false){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: 'zOkVVUuK7afYoJMt3I8iBf30-gzGzoHsz',
+      appKey: 'giyBeNso15veM7cwxPkuT1OL',
+      placeholder: '说说你的想法吧~',
+      avatar: 'monsterid',
+      meta: 'nick,mail'.split(','),
+      pageSize: '10',
+      lang: 'zh-CN',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !false) {
+  if (false) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

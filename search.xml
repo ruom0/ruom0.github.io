@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>pwn使用指定libc运行程序</title>
+    <url>/2021/06/21/others/pwn%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9Alibc%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F/</url>
+    <content><![CDATA[<h3 id="patchelf安装">patchelf安装</h3>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/NixOS/patchelf.git</span><br><span class="line">./bootstrap.sh</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
+<p>如果出现报错<code>./bootstrap.sh: 2: autoreconf: not found</code>则运行<code>sudo apt-get install autoconf automake libtool</code>后再<code>./bootstrap.sh</code></p>
+<h3 id="glibc-all-in-one安装">glibc-all-in-one安装</h3>
+<p><code>git clone https://github.com/matrix1001/glibc-all-in-one</code></p>
+<h3 id="使用指定libc运行程序">使用指定libc运行程序</h3>
+<ol>
+<li>
+<p>使用glibc-all-in-one下载，或者自己去镜像站下载，如http://ftp.osuosl.org/pub/ubuntu/pool/main/g/glibc/，这里ubuntu的。如果自己下载的deb，那就先用glibc-all-in-one的<code>extract</code>将deb输出</p>
+</li>
+<li>
+<p>调用命令<code>ldd program</code>先看下当前程序的链接情况，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop/buuoj/【OGeek2019】babyrop]</span><br><span class="line">└─$ ldd pwn</span><br><span class="line">        linux-gate.so.1 (0xf7f49000)</span><br><span class="line">        libc.so.6 =&gt; /lib/i386-linux-gnu/libc.so.6 (0xf7d44000)</span><br><span class="line">        /lib/ld-linux.so.2 (0xf7f4b000)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>用patchelf修改，如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">patchelf --set-interpreter ~/Desktop/test/ld-linux.so.2 ./pwn</span><br><span class="line">patchelf --replace-needed libc.so.6 ~/Desktop/test/libc-2.23.so ./pwn</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>ruom0&#39;s daily</title>
     <url>/2021/06/03/ruom0_daily/</url>
     <content><![CDATA[<h2 id="2021年">2021年</h2>
@@ -39,101 +69,6 @@
       <categories>
         <category>others</category>
       </categories>
-  </entry>
-  <entry>
-    <title>pwn环境配置（kali虚拟机）</title>
-    <url>/2021/06/13/others/pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE(kali%E8%99%9A%E6%8B%9F%E6%9C%BA)/</url>
-    <content><![CDATA[<h2 id="kali初始配置">kali初始配置</h2>
-<h3 id="获取kali">获取kali</h3>
-<blockquote>
-<p>文档撰写时kali版本为：2021.2</p>
-</blockquote>
-<ol>
-<li>从kali官网获取kali（<a href="https://www.kali.org/get-kali/">Get Kali</a>），选择<strong>Virtual Machines</strong>，我这用的vmware，所以下vmware的</li>
-<li>将下载来的7z解压出来，然后使用vmware打开</li>
-<li>开机，默认账号密码为：<code>kali/kali</code></li>
-</ol>
-<h3 id="中文切换">中文切换</h3>
-<ol>
-<li><code>Ctrl + Alt + T</code>打开terminal，输入<code>sudo dpkg-reconfigure locales</code></li>
-<li>选中<code>en_US.UTF-8</code>、<code>zh_CN.GBK</code>和<code>zh_CN.UTF-8</code>（基本操作：上下键切换，空格键选中，也可用PageDown和PageUp键快速翻页），回车进入下一步</li>
-<li>选择<code>zh_CN.UTF-8</code>，回车完成配置</li>
-<li>执行命令<code>sudo apt-get install ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy</code>安装字体</li>
-<li>执行命令<code>sudo reboot</code>重启虚拟机完成初始配置</li>
-</ol>
-<h2 id="pwn环境安装">pwn环境安装</h2>
-<blockquote>
-<p>默认环境：python2.7.18、python3.9.2，无pip</p>
-</blockquote>
-<h3 id="pwntools安装">pwntools安装</h3>
-<ol>
-<li>执行命令<code>sudo apt install python3-pip</code>安装pip</li>
-<li>执行命令<code>pip install pwntools</code>安装pwntools</li>
-<li>在python3中测试pwntools是否安装成功，测试结果如下</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~]</span><br><span class="line">└─$ python3</span><br><span class="line">Python 3.9.2 (default, Feb 28 2021, 17:03:44) </span><br><span class="line">[GCC 10.2.1 20210110] on linux</span><br><span class="line">Type <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; from pwn import *</span><br><span class="line">&gt;&gt;&gt; asm(<span class="string">&#x27;xor eax,eax&#x27;</span>)</span><br><span class="line">b<span class="string">&#x27;1\xc0&#x27;</span></span><br></pre></td></tr></table></figure>
-<h3 id="pwndbg安装">pwndbg安装</h3>
-<blockquote>
-<p>kali 2021.2默认无gdb</p>
-</blockquote>
-<ol>
-<li>输入命令<code>sudo apt install gdb</code>安装gdb</li>
-<li>输入命令<code>git clone https://github.com/pwndbg/pwndbg</code>从仓库中将pwndbg clone至本机</li>
-<li>执行以下命令安装pwndbg</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> pwndbg</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
-<ol start="4">
-<li>输入<code>gdb</code>测试，测试结果如下：</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/pwndbg]</span><br><span class="line">└─$ gdb</span><br><span class="line">GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git</span><br><span class="line">Copyright (C) 2021 Free Software Foundation, Inc.                                                    </span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line">Type <span class="string">&quot;show copying&quot;</span> and <span class="string">&quot;show warranty&quot;</span> <span class="keyword">for</span> details.</span><br><span class="line">This GDB was configured as <span class="string">&quot;x86_64-linux-gnu&quot;</span>.</span><br><span class="line">Type <span class="string">&quot;show configuration&quot;</span> <span class="keyword">for</span> configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;https://www.gnu.org/software/gdb/bugs/&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span><br><span class="line"></span><br><span class="line">For <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">&quot;help&quot;</span>.</span><br><span class="line">Type <span class="string">&quot;apropos word&quot;</span> to search <span class="keyword">for</span> commands related to <span class="string">&quot;word&quot;</span>.</span><br><span class="line">pwndbg: loaded 189 commands. Type pwndbg [filter] <span class="keyword">for</span> a list.</span><br><span class="line">pwndbg: created <span class="variable">$rebase</span>, <span class="variable">$ida</span> gdb <span class="built_in">functions</span> (can be used with <span class="built_in">print</span>/<span class="built_in">break</span>)</span><br><span class="line">pwndbg&gt; </span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>ps: 注意不能删除clone下来的pwndbg目录，不然就会回到普通的gdb</p>
-</blockquote>
-<h3 id="LibcSearcher安装">LibcSearcher安装</h3>
-<p>依次运行以下命令即可</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/lieanu/LibcSearcher.git</span><br><span class="line"><span class="built_in">cd</span> LibcSearcher</span><br><span class="line">sudo python setup.py develop</span><br></pre></td></tr></table></figure>
-<h3 id="ROPgadget安装">ROPgadget安装</h3>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt install capstone</span><br><span class="line">git clone https://github.com/JonathanSalwan/ROPgadget.git</span><br><span class="line">cd ROPgadget</span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
-<p>安装完后调用ROPgadget命令可能会会报如下错误类似这样的错误<code>pkg_resources.ResolutionError: Script 'scripts/ROPgadget' not found in metadata at '一个目录'</code></p>
-<p>这个时候在clone下来的ROPgadget目录下输入命令<code>sudo cp -r scripts 目录</code>，后面的目录就是上面报错的目录。</p>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-        <tag>kali</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>pwn使用指定libc运行程序</title>
-    <url>/2021/06/21/others/pwn%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9Alibc%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F/</url>
-    <content><![CDATA[<h3 id="patchelf安装">patchelf安装</h3>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/NixOS/patchelf.git</span><br><span class="line">./bootstrap.sh</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure>
-<p>如果出现报错<code>./bootstrap.sh: 2: autoreconf: not found</code>则运行<code>sudo apt-get install autoconf automake libtool</code>后再<code>./bootstrap.sh</code></p>
-<h3 id="glibc-all-in-one安装">glibc-all-in-one安装</h3>
-<p><code>git clone https://github.com/matrix1001/glibc-all-in-one</code></p>
-<h3 id="使用指定libc运行程序">使用指定libc运行程序</h3>
-<ol>
-<li>
-<p>使用glibc-all-in-one下载，或者自己去镜像站下载，如http://ftp.osuosl.org/pub/ubuntu/pool/main/g/glibc/，这里ubuntu的。如果自己下载的deb，那就先用glibc-all-in-one的<code>extract</code>将deb输出</p>
-</li>
-<li>
-<p>调用命令<code>ldd program</code>先看下当前程序的链接情况，例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/Desktop/buuoj/【OGeek2019】babyrop]</span><br><span class="line">└─$ ldd pwn</span><br><span class="line">        linux-gate.so.1 (0xf7f49000)</span><br><span class="line">        libc.so.6 =&gt; /lib/i386-linux-gnu/libc.so.6 (0xf7d44000)</span><br><span class="line">        /lib/ld-linux.so.2 (0xf7f4b000)</span><br></pre></td></tr></table></figure>
-</li>
-<li>
-<p>用patchelf修改，如</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">patchelf --set-interpreter ~/Desktop/test/ld-linux.so.2 ./pwn</span><br><span class="line">patchelf --replace-needed libc.so.6 ~/Desktop/test/libc-2.23.so ./pwn</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-      </tags>
   </entry>
   <entry>
     <title>第1章 计算机系统漫游</title>
@@ -218,6 +153,71 @@
       </categories>
       <tags>
         <tag>csapp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>pwn环境配置（kali虚拟机）</title>
+    <url>/2021/06/13/others/pwn%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE(kali%E8%99%9A%E6%8B%9F%E6%9C%BA)/</url>
+    <content><![CDATA[<h2 id="kali初始配置">kali初始配置</h2>
+<h3 id="获取kali">获取kali</h3>
+<blockquote>
+<p>文档撰写时kali版本为：2021.2</p>
+</blockquote>
+<ol>
+<li>从kali官网获取kali（<a href="https://www.kali.org/get-kali/">Get Kali</a>），选择<strong>Virtual Machines</strong>，我这用的vmware，所以下vmware的</li>
+<li>将下载来的7z解压出来，然后使用vmware打开</li>
+<li>开机，默认账号密码为：<code>kali/kali</code></li>
+</ol>
+<h3 id="中文切换">中文切换</h3>
+<ol>
+<li><code>Ctrl + Alt + T</code>打开terminal，输入<code>sudo dpkg-reconfigure locales</code></li>
+<li>选中<code>en_US.UTF-8</code>、<code>zh_CN.GBK</code>和<code>zh_CN.UTF-8</code>（基本操作：上下键切换，空格键选中，也可用PageDown和PageUp键快速翻页），回车进入下一步</li>
+<li>选择<code>zh_CN.UTF-8</code>，回车完成配置</li>
+<li>执行命令<code>sudo apt-get install ttf-wqy-microhei ttf-wqy-zenhei xfonts-wqy</code>安装字体</li>
+<li>执行命令<code>sudo reboot</code>重启虚拟机完成初始配置</li>
+</ol>
+<h2 id="pwn环境安装">pwn环境安装</h2>
+<blockquote>
+<p>默认环境：python2.7.18、python3.9.2，无pip</p>
+</blockquote>
+<h3 id="pwntools安装">pwntools安装</h3>
+<ol>
+<li>执行命令<code>sudo apt install python3-pip</code>安装pip</li>
+<li>执行命令<code>pip install pwntools</code>安装pwntools</li>
+<li>在python3中测试pwntools是否安装成功，测试结果如下</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~]</span><br><span class="line">└─$ python3</span><br><span class="line">Python 3.9.2 (default, Feb 28 2021, 17:03:44) </span><br><span class="line">[GCC 10.2.1 20210110] on linux</span><br><span class="line">Type <span class="string">&quot;help&quot;</span>, <span class="string">&quot;copyright&quot;</span>, <span class="string">&quot;credits&quot;</span> or <span class="string">&quot;license&quot;</span> <span class="keyword">for</span> more information.</span><br><span class="line">&gt;&gt;&gt; from pwn import *</span><br><span class="line">&gt;&gt;&gt; asm(<span class="string">&#x27;xor eax,eax&#x27;</span>)</span><br><span class="line">b<span class="string">&#x27;1\xc0&#x27;</span></span><br></pre></td></tr></table></figure>
+<h3 id="pwndbg安装">pwndbg安装</h3>
+<blockquote>
+<p>kali 2021.2默认无gdb</p>
+</blockquote>
+<ol>
+<li>输入命令<code>sudo apt install gdb</code>安装gdb</li>
+<li>输入命令<code>git clone https://github.com/pwndbg/pwndbg</code>从仓库中将pwndbg clone至本机</li>
+<li>执行以下命令安装pwndbg</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">cd</span> pwndbg</span><br><span class="line">./setup.sh</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>输入<code>gdb</code>测试，测试结果如下：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~/pwndbg]</span><br><span class="line">└─$ gdb</span><br><span class="line">GNU gdb (Debian 10.1-1.7) 10.1.90.20210103-git</span><br><span class="line">Copyright (C) 2021 Free Software Foundation, Inc.                                                    </span><br><span class="line">License GPLv3+: GNU GPL version 3 or later &lt;http://gnu.org/licenses/gpl.html&gt;</span><br><span class="line">This is free software: you are free to change and redistribute it.</span><br><span class="line">There is NO WARRANTY, to the extent permitted by law.</span><br><span class="line">Type <span class="string">&quot;show copying&quot;</span> and <span class="string">&quot;show warranty&quot;</span> <span class="keyword">for</span> details.</span><br><span class="line">This GDB was configured as <span class="string">&quot;x86_64-linux-gnu&quot;</span>.</span><br><span class="line">Type <span class="string">&quot;show configuration&quot;</span> <span class="keyword">for</span> configuration details.</span><br><span class="line">For bug reporting instructions, please see:</span><br><span class="line">&lt;https://www.gnu.org/software/gdb/bugs/&gt;.</span><br><span class="line">Find the GDB manual and other documentation resources online at:</span><br><span class="line">    &lt;http://www.gnu.org/software/gdb/documentation/&gt;.</span><br><span class="line"></span><br><span class="line">For <span class="built_in">help</span>, <span class="built_in">type</span> <span class="string">&quot;help&quot;</span>.</span><br><span class="line">Type <span class="string">&quot;apropos word&quot;</span> to search <span class="keyword">for</span> commands related to <span class="string">&quot;word&quot;</span>.</span><br><span class="line">pwndbg: loaded 189 commands. Type pwndbg [filter] <span class="keyword">for</span> a list.</span><br><span class="line">pwndbg: created <span class="variable">$rebase</span>, <span class="variable">$ida</span> gdb <span class="built_in">functions</span> (can be used with <span class="built_in">print</span>/<span class="built_in">break</span>)</span><br><span class="line">pwndbg&gt; </span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ps: 注意不能删除clone下来的pwndbg目录，不然就会回到普通的gdb</p>
+</blockquote>
+<h3 id="LibcSearcher安装">LibcSearcher安装</h3>
+<p>依次运行以下命令即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/lieanu/LibcSearcher.git</span><br><span class="line"><span class="built_in">cd</span> LibcSearcher</span><br><span class="line">sudo python setup.py develop</span><br></pre></td></tr></table></figure>
+<h3 id="ROPgadget安装">ROPgadget安装</h3>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo apt install capstone</span><br><span class="line">git clone https://github.com/JonathanSalwan/ROPgadget.git</span><br><span class="line">cd ROPgadget</span><br><span class="line">sudo python3 setup.py install</span><br></pre></td></tr></table></figure>
+<p>安装完后调用ROPgadget命令可能会会报如下错误类似这样的错误<code>pkg_resources.ResolutionError: Script 'scripts/ROPgadget' not found in metadata at '一个目录'</code></p>
+<p>这个时候在clone下来的ROPgadget目录下输入命令<code>sudo cp -r scripts 目录</code>，后面的目录就是上面报错的目录。</p>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>kali</tag>
       </tags>
   </entry>
   <entry>
@@ -416,6 +416,53 @@
 <li>ReadFIle_offset = <code>0xA7140D</code></li>
 <li>可能可以fuzz的函数<code>sub_6BAA00</code>，第三个参数为文件的绝对路径，前两个参数暂时未知，需要调试</li>
 </ul>
+]]></content>
+      <categories>
+        <category>work</category>
+      </categories>
+      <tags>
+        <tag>work</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>work_day7</title>
+    <url>/2021/08/04/work/day7/</url>
+    <content><![CDATA[<h2 id="day6和day7做了什么">day6和day7做了什么</h2>
+<p>day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。</p>
+<p>day7也就是今天，分析了一个crash，找到了哪里导致的错误赋值，但是依旧没有找到原因，被一个tifread.c卡住了，我都找不到这个文件！不过这个空指针调用的crash我感觉大概率是没办法利用的，当然不排除构造特定的tif文件可以控制他的值，不过好困难，因为他错误赋值赋值的是一个地址，最后又要从这个地址取值。因为原本的那个tif在赋值之后的地址取出来的值是全0所以就在movzx崩溃了……具体的分析过程看下面吧，第一次分析QAQ可能不到位。</p>
+<h2 id="Image-Gear-Crash-17CDB9分析">Image Gear Crash 17CDB9分析</h2>
+<p>crash附件：<a href="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/17CDB9">download</a></p>
+<p>异常语句：<code>movzx eax,word ptr ds:[eax]</code></p>
+<p>异常位置偏移：<code>0x17CDB9</code></p>
+<p>导致原因：偏移为<code>0x17CDA8</code>处的函数（sub_10175610）调用返回地址+0x8位置内容为全0</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img01.png" alt="img1"></p>
+<ul>
+<li>
+<p>sub_10175610</p>
+<p>在直接跑一遍之后可以发现最后的eax只与edx和语句<code>lea eax,dword ptr ds:[edx+eax*4]</code>之前的eax有关，edx在传入时就是a1的地址，该语句之前的eax值固定为0xB8，因此只与传入参数a1的地址有关。</p>
+</li>
+</ul>
+<p>回到异常语句所在的函数，可以看到sub_10175610传入的第一个参数为<code>*(_DWORD *)(v6 + 20)</code></p>
+<p>该语句所在为LABEL_36，往上翻可以看到3处可以跳转到LABEL_36的地方。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img02.png" alt="img2"></p>
+<p>在该crash中真正跳转到LABEL_36的为case 1部分。由ida反编译出来的内容可以知道v6代表的是edi，导致异常的函数传入的是<code>v6+0x14</code>地址处的值（edx），最后在eax中的的是<code>edx+0xB8</code>。</p>
+<p>经过调试可以知道，在<code>edi+0x14</code>地址处的值在经过case1中的sub_10177A90和LABEL_36中的sub_100595B0后均未发生变化，继续往上找调用过edi（v6）的函数，最近的是同LABEL下偏移为<code>0x17CD8C</code>处的call，调试后发现经过该call后无变化。</p>
+<p>接着可以看到sub_10176AC0调用了异常所在函数sub_1017CB60，在其中可以看到传入参数对应为Size的是v10，因此我们需要监控的位置就是<code>v10+0x14</code>的位置。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img03.png" alt="img3"></p>
+<p>在偏移为<code>0x176B02</code>处下断点调试，单步得到此时v10保存地址，地址加<code>0x14</code>得到和后续函数有关内容，加入到监控中。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img04.png" alt="img4"></p>
+<p>在调试中可以看到函数<code>sub_1000FBD0</code>将<code>v10+0x14</code>处的值初始化为全0。</p>
+<p>继续单步调试可以发现在步过函数<code>sub_1017B050</code>后<code>v10+0x14</code>处的值发生了变化，在步过函数<code>sub_10175C80</code>后未发生变化，并且一直到触发异常都未发生变化。</p>
+<p>因此导致异常的函数是<code>sub_1017B050</code>，在改函数处理时错误的修改了<code>v10+0x14</code>位置的值，最后导致函数异常。</p>
+<p>重新调试步进进入<code>sub_1017B050</code>，在调试中可以看到在步过偏移为<code>0x17B0D5</code>处的call语句时监控的内存值发生了变化，对应命令为<code>v10 = sub_101750B0(v9, a2, *(_DOWRD *)(v7+24), &amp;unk_102B8780, 172, v7+20, v7+152, 1000)</code>，在该行指令处下断点，重新进行调试。</p>
+<p>可以看到第3个、第6个、第7个参数和v7有关，并且第6个参数是<code>v7+0x14</code>，因此暂时先关注第6个参数。进入函数中可以看到有3处和a6有关。</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img05.png" alt="img5"></p>
+<p><code>call sub_10175150</code>的偏移为<code>0x175103</code>，下断点。步过之后a6即<code>v7+0x14</code>处的值发生变化。</p>
+<p><code>call sub_10174C70</code>的偏移为<code>0x17511C</code>，<code>call sub_10174A00</code>的偏移为<code>0x17513C</code>，在这两处都下断点然后运行程序。</p>
+<p>程序在运行后在<code>call sub_10174C70</code>语句停下，步过后a6的值没有发生变化；继续运行在<code>call sub_10174A00</code>语句停下，步过之后a6的值没有发生变化。因此错误数值在函数<code>sub_10175150</code>中被赋值给了a6。</p>
+<p>最后定位到了错误赋值语句<code>*v9 = v13</code>，而v13是在上一行被赋值的，语句为<code>v13 = AF_memm_alloc(a2, 12 * (unsigned __int16)a5 + 712, (int)&quot;..\\..\\..\\..\\Common\\Formats\\tifread.c&quot;, 2693);</code></p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img06.png" alt="img6"></p>
+<p>因为没有找到这个tifread.c……所以分析不下去了……</p>
 ]]></content>
       <categories>
         <category>work</category>
