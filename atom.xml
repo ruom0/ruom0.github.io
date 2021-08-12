@@ -6,7 +6,7 @@
   <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
   <link href="https://www.ruomo.fun/"/>
-  <updated>2021-08-04T07:18:37.655Z</updated>
+  <updated>2021-07-26T09:08:30.611Z</updated>
   <id>https://www.ruomo.fun/</id>
   
   <author>
@@ -15,111 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>work_day7</title>
-    <link href="https://www.ruomo.fun/2021/08/04/work/day7/"/>
-    <id>https://www.ruomo.fun/2021/08/04/work/day7/</id>
-    <published>2021-08-04T07:12:20.659Z</published>
-    <updated>2021-08-04T07:18:37.655Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="day6和day7做了什么">day6和day7做了什么</h2><p>day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。</p><p>day7也就是今天，分析了一个crash，找到了哪里导致的错误赋值，但是依旧没有找到原因，被一个tifread.c卡住了，我都找不到这个文件！不过这个空指针调用的crash我感觉大概率是没办法利用的，当然不排除构造特定的tif文件可以控制他的值，不过好困难，因为他错误赋值赋值的是一个地址，最后又要从这个地址取值。因为原本的那个tif在赋值之后的地址取出来的值是全0所以就在movzx崩溃了……具体的分析过程看下面吧，第一次分析QAQ可能不到位。</p><h2 id="Image-Gear-Crash-17CDB9分析">Image Gear Crash 17CDB9分析</h2><p>crash附件：<a href="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/17CDB9">download</a></p><p>异常语句：<code>movzx eax,word ptr ds:[eax]</code></p><p>异常位置偏移：<code>0x17CDB9</code></p><p>导致原因：偏移为<code>0x17CDA8</code>处的函数（sub_10175610）调用返回地址+0x8位置内容为全0</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img01.png" alt="img1"></p><ul><li><p>sub_10175610</p><p>在直接跑一遍之后可以发现最后的eax只与edx和语句<code>lea eax,dword ptr ds:[edx+eax*4]</code>之前的eax有关，edx在传入时就是a1的地址，该语句之前的eax值固定为0xB8，因此只与传入参数a1的地址有关。</p></li></ul><p>回到异常语句所在的函数，可以看到sub_10175610传入的第一个参数为<code>*(_DWORD *)(v6 + 20)</code></p><p>该语句所在为LABEL_36，往上翻可以看到3处可以跳转到LABEL_36的地方。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img02.png" alt="img2"></p><p>在该crash中真正跳转到LABEL_36的为case 1部分。由ida反编译出来的内容可以知道v6代表的是edi，导致异常的函数传入的是<code>v6+0x14</code>地址处的值（edx），最后在eax中的的是<code>edx+0xB8</code>。</p><p>经过调试可以知道，在<code>edi+0x14</code>地址处的值在经过case1中的sub_10177A90和LABEL_36中的sub_100595B0后均未发生变化，继续往上找调用过edi（v6）的函数，最近的是同LABEL下偏移为<code>0x17CD8C</code>处的call，调试后发现经过该call后无变化。</p><p>接着可以看到sub_10176AC0调用了异常所在函数sub_1017CB60，在其中可以看到传入参数对应为Size的是v10，因此我们需要监控的位置就是<code>v10+0x14</code>的位置。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img03.png" alt="img3"></p><p>在偏移为<code>0x176B02</code>处下断点调试，单步得到此时v10保存地址，地址加<code>0x14</code>得到和后续函数有关内容，加入到监控中。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img04.png" alt="img4"></p><p>在调试中可以看到函数<code>sub_1000FBD0</code>将<code>v10+0x14</code>处的值初始化为全0。</p><p>继续单步调试可以发现在步过函数<code>sub_1017B050</code>后<code>v10+0x14</code>处的值发生了变化，在步过函数<code>sub_10175C80</code>后未发生变化，并且一直到触发异常都未发生变化。</p><p>因此导致异常的函数是<code>sub_1017B050</code>，在改函数处理时错误的修改了<code>v10+0x14</code>位置的值，最后导致函数异常。</p><p>重新调试步进进入<code>sub_1017B050</code>，在调试中可以看到在步过偏移为<code>0x17B0D5</code>处的call语句时监控的内存值发生了变化，对应命令为<code>v10 = sub_101750B0(v9, a2, *(_DOWRD *)(v7+24), &amp;unk_102B8780, 172, v7+20, v7+152, 1000)</code>，在该行指令处下断点，重新进行调试。</p><p>可以看到第3个、第6个、第7个参数和v7有关，并且第6个参数是<code>v7+0x14</code>，因此暂时先关注第6个参数。进入函数中可以看到有3处和a6有关。</p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img05.png" alt="img5"></p><p><code>call sub_10175150</code>的偏移为<code>0x175103</code>，下断点。步过之后a6即<code>v7+0x14</code>处的值发生变化。</p><p><code>call sub_10174C70</code>的偏移为<code>0x17511C</code>，<code>call sub_10174A00</code>的偏移为<code>0x17513C</code>，在这两处都下断点然后运行程序。</p><p>程序在运行后在<code>call sub_10174C70</code>语句停下，步过后a6的值没有发生变化；继续运行在<code>call sub_10174A00</code>语句停下，步过之后a6的值没有发生变化。因此错误数值在函数<code>sub_10175150</code>中被赋值给了a6。</p><p>最后定位到了错误赋值语句<code>*v9 = v13</code>，而v13是在上一行被赋值的，语句为<code>v13 = AF_memm_alloc(a2, 12 * (unsigned __int16)a5 + 712, (int)&quot;..\\..\\..\\..\\Common\\Formats\\tifread.c&quot;, 2693);</code></p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/winafl/image_gear/crash_17CDB9/img06.png" alt="img6"></p><p>因为没有找到这个tifread.c……所以分析不下去了……</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;day6和day7做了什么&quot;&gt;day6和day7做了什么&lt;/h2&gt;
-&lt;p&gt;day6的时候用winafl-cmin最小化了一下语料库，里面都是tif文件，然后用winafl去fuzz了一下自己写的harness，出了6个crash。&lt;/p&gt;
-&lt;p&gt;day7也就是今天</summary>
-      
-    
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>work_day5</title>
-    <link href="https://www.ruomo.fun/2021/08/02/work/day5/"/>
-    <id>https://www.ruomo.fun/2021/08/02/work/day5/</id>
-    <published>2021-08-02T07:18:32.705Z</published>
-    <updated>2021-08-02T07:39:48.554Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="day3和day4做了啥">day3和day4做了啥</h2><p>上周（day3）的时候PlanMaker找到了另一个fuzz点，那个函数需要传入的参数有一个堆、文件名以及一个固定变化的参数a3，并且每次打开文件这个函数会被调用6次。后两个参数比较简单，文件名直接传就行，参数a3调试出来时固定的6个值，弄个数组就可以了。最重要的是第一个参数的堆。</p><p>在堆创建之后会被初始化，初始化大部分是给出一个固定的值，不过有两个块是调用了开发者自己写的两个函数，并且返回值是一个新的堆。本来想着直接调用初始化函数再传参就行，结果在初始化函数的那两个块中，调用到了全局变量用于防止线程冲突，因为我没有初始化变量于是就跑飞了。</p><p>在不断调试之后确认了好多个用于访问控制的结构体变量在内存中存储的值（因为所有的都是连起来在data段中存储的），于是基地址加上偏移的方式覆盖了这几个全局变量的值。再次调用初始化函数，还是跑飞了……</p><p>不断调试后发现他一直套娃，第一个函数返回的堆是另一个函数的返回的堆再做一堆操作之后的，跑飞是在那个函数中，跟进去发现是断在了malloc函数。最开始和师傅讨论觉得不可能啊，怎么可能会断在malloc函数，后来发现似乎没有重定位的符号表，所以程序跑的时候不知道这个函数是个啥，就跑飞了……商讨了下修复重定位的话工作量有点大，并且修复好之后还不一定跑起来，跑起来了又不一定能做fuzz点，于是向leader要求换了个方向QAQ。</p><h2 id="day5做了啥">day5做了啥</h2><p>由于双休，今天8月2日周一是day5，虽然今天还没结束，但是我已经预感到了我今天都做了啥……</p><p>早上的时候把自己写的harness编译了一下，跑的时候发现跑不动，于是去找问题，发现自己忘记extern了，笑死。在加了extern之后还是跑不动，问了另一位研究过这个的师傅，他让我先drrun插桩试一下，然后发现插桩插不上去，log里面问我offset。在听取师傅的建议之后，把打开文件的函数放到了另一个函数中而不是main，改了extern为自己写的fuzzme函数中，并且删除了检查文件是否支持的函数（因为在检查函数中就一定打开文件了，重复操作）。</p><p>吃了个午饭，然后编译了一下harness。harness编译之后用drrun去插桩测试正常跑了，于是我尝试用winafl-cmin.py去缩减样本，但是缩减的时候我nt忘记开脚本关闭License窗口了，电脑卡死N次（忘记开了N次笑死）。成功跑起来之后一直报错说pipe无法收到’P’，收到了’ '。</p><p>一顿胡搞瞎搞的操作之后还是不行，于是我更换DynamoRIO版本，原先用的最新版，好像是7.8，现在改成了用7.7版本的。在更换版本之后也没插桩什么去测试，直接winafl去跑了，一直timeout，不管是换文件还是怎么都是timeout。然后去插桩测试，也是timeout……</p><p>听取了师傅的建议后harness重新编译了一个32位的，winafl和DynamoRIO也用32位的，成功跑起来了。</p><p>截止到写文档时还在缩减样本……估计后面样本搞定后就是winafl跑等出crash了，没什么好说的……就这样。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;day3和day4做了啥&quot;&gt;day3和day4做了啥&lt;/h2&gt;
-&lt;p&gt;上周（day3）的时候PlanMaker找到了另一个fuzz点，那个函数需要传入的参数有一个堆、文件名以及一个固定变化的参数a3，并且每次打开文件这个函数会被调用6次。后两个参数比较简单，文件名</summary>
-      
-    
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>work_day2</title>
-    <link href="https://www.ruomo.fun/2021/07/28/work/day2/"/>
-    <id>https://www.ruomo.fun/2021/07/28/work/day2/</id>
-    <published>2021-07-28T12:13:24.732Z</published>
-    <updated>2021-07-28T12:15:52.171Z</updated>
-    
-    <content type="html"><![CDATA[<p>根据<a href="https://talosintelligence.com/vulnerability_reports/TALOS-2020-1192">TALOS-2020-1192</a>学习了PlanMaker 2021的1014修订版的溢出漏洞，分析了成因，在无尘师傅的帮助下定位了可能可以用于fuzz的函数。</p><h3 id="32位PlanMaker">32位PlanMaker</h3><blockquote><p>问题1：直接打开PlanMaker后打开自建的*.pmd文件，在Process Monitor的用户栈信息中没有PlanMaker对自身模块的调用；而直接打开自建的*.pmd文件后则可以在Process Monitor的用户栈信息中查看到PlanMaker对自身模块的调用信息。</p></blockquote><ul><li>PlanMaker.exe基地址<code>0xfb0000</code></li><li>PlanMaker.exe调用<code>CreateFile</code>和<code>ReadFile</code>的用户栈情况如下面两张图</li></ul><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/day2/CreateFile.png" alt="CreateFile"></p><p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/work/day2/ReadFile.png" alt="ReadFile"></p><ul><li>CreateFile_offset = <code>0xA72178</code></li><li>ReadFIle_offset = <code>0xA7140D</code></li><li>可能可以fuzz的函数<code>sub_6BAA00</code>，第三个参数为文件的绝对路径，前两个参数暂时未知，需要调试</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;根据&lt;a href=&quot;https://talosintelligence.com/vulnerability_reports/TALOS-2020-1192&quot;&gt;TALOS-2020-1192&lt;/a&gt;学习了PlanMaker 2021的1014修订版的溢出漏洞，分析了成因，在</summary>
-      
-    
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>work_day1</title>
-    <link href="https://www.ruomo.fun/2021/07/28/work/day1/"/>
-    <id>https://www.ruomo.fun/2021/07/28/work/day1/</id>
-    <published>2021-07-28T10:45:59.838Z</published>
-    <updated>2021-07-28T10:47:20.567Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="虚拟机环境配置">虚拟机环境配置</h2><blockquote><p>虚拟机系统为ubuntu 18.04.5，只安装了Python3</p></blockquote><h3 id="pwntools安装">pwntools安装</h3><ol><li>执行命令 <code>sudo apt install python3-pip</code> 安装 pip</li><li>执行命令 <code>pip install pwntools</code> 安装 pwntools</li></ol><h3 id="pwndbg及peda安装">pwndbg及peda安装</h3><p>从<a href="https://github.com/pwndbg/pwndbg">pwndbg</a>以及<a href="https://github.com/longld/peda">peda</a>下载两个工具的压缩包，将它们都解压在用户目录下。</p><p><code>cd pwndbg</code>进入pwndbg的目录，执行命令<code>./setup.sh</code>，脚本运行完成后执行<code>gdb</code>。（这边遇到一个不知道为什么的问题，gdb进入后没有变pwndbg，查看了一下.gdbinit文件发现pwndbg的gdbinit.py文件没有写进去，自己手动加了一行<code>source ~/pwndbg/gdbinit.py</code>）</p><p>执行命令<code>&quot;source ~/peda/peda.py&quot; &gt;&gt; ~/.gdbinit</code>将peda的启动方式写进去。</p><blockquote><p>更换pwndbg和peda的方法为将另一个的source给注释掉，如果两个同时存在则只会启动第一行所指定的插件。</p></blockquote><h3 id="LibcSearcher安装">LibcSearcher安装</h3><p>从<a href="https://github.com/lieanu/LibcSearcher">LibcSearcher</a>下载压缩包解压，进入目录中执行<code>sudo python setup.py develop</code>即可。</p><h3 id="ROPgadget安装">ROPgadget安装</h3><p>从<a href="https://github.com/JonathanSalwan/ROPgadget">ROPgadget</a>下载压缩包解压，进入目录中依次执行以下命令即可。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo pip install capstone</span><br><span class="line">sudo python setup.py install</span><br></pre></td></tr></table></figure><p>安装完成后运行报错<code>pkg_resources.ResolutionError: Script 'scripts/ROPgadget' not found in metadata at '/home/abai/.local/lib/python3.6/site-packages/ROPGadget-6.6.dist-info'</code></p><p>解决方法：执行命令<code>sudo cp -r scripts /home/abai/.local/lib/python3.6/site-packages/ROPGadget-6.6.dist-info</code></p><h3 id="glibc-all-in-one安装">glibc-all-in-one安装</h3><p>从<a href="https://github.com/matrix1001/glibc-all-in-one">glibc-all-in-one</a>下载解压即可。</p><h3 id="patchelf安装">patchelf安装</h3><p>从<a href="https://github.com/NixOS/patchelf">patchelf</a>下载解压，进入目录中，依次执行以下命令</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">./bootstrap.sh</span><br><span class="line">./configure</span><br><span class="line">make</span><br><span class="line">sudo make install</span><br></pre></td></tr></table></figure><p>在执行第一行命令时遇到报错<code>./bootstrap.sh: 2: autoreconf: not found</code>，执行命令<code>sudo apt-get install autoconf automake libtool</code>解决。</p><h2 id="Winafl安装">Winafl安装</h2><ol><li><p>Visual Studio 2017安装</p><p>由于官网比较难下载到，因此在其他网站下载了2017的安装包并安装。</p></li><li><p>CMake安装</p><p>从<a href="https://cmake.org/download/">CMake官网</a>下载CMake的msi文件安装</p></li><li><p>DynamoRIO下载</p><ol><li>前往<a href="https://dynamorio.org/page_releases.html">DynamoRIO官网</a>下载压缩包</li><li>解压压缩包</li></ol></li><li><p>打开<code>VS 2017的 x64_x86 交叉工具命令提示符</code>，进入winafl的build64目录中</p></li><li><p>输入命令<code>cmake -G&quot;Visual Studio 15 2017&quot; -A x64 .. -DDynamoRIO_DIR=E:\DynamoRIO\cmake -DINTELPT=0 -DUSE_DRSYMS=1</code>，输出结果如下：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">E:\winafl\build64&gt;cmake -G&quot;Visual Studio 15 2017&quot; -A x64 .. -DDynamoRIO_DIR=E:\DynamoRIO\cmake -DINTELPT=0 -DUSE_DRSYMS=1</span><br><span class="line">CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):</span><br><span class="line">  Compatibility with CMake &lt; 2.8.12 will be removed from a future version of</span><br><span class="line">  CMake.</span><br><span class="line"></span><br><span class="line">  Update the VERSION argument &lt;min&gt; value or use a ...&lt;max&gt; suffix to tell</span><br><span class="line">  CMake that the project does not need compatibility with older versions.</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-- Selecting Windows SDK version 10.0.17763.0 to target Windows 10.0.19042.</span><br><span class="line">-- The C compiler identification is MSVC 19.16.27045.0</span><br><span class="line">-- The CXX compiler identification is MSVC 19.16.27045.0</span><br><span class="line">-- Detecting C compiler ABI info</span><br><span class="line">-- Detecting C compiler ABI info - done</span><br><span class="line">-- Check for working C compiler: D:/Visual Studio IDE/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe - skipped</span><br><span class="line">-- Detecting C compile features</span><br><span class="line">-- Detecting C compile features - done</span><br><span class="line">-- Detecting CXX compiler ABI info</span><br><span class="line">-- Detecting CXX compiler ABI info - done</span><br><span class="line">-- Check for working CXX compiler: D:/Visual Studio IDE/VC/Tools/MSVC/14.16.27023/bin/Hostx64/x64/cl.exe - skipped</span><br><span class="line">-- Detecting CXX compile features</span><br><span class="line">-- Detecting CXX compile features - done</span><br><span class="line">-- Configuring done</span><br><span class="line">-- Generating done</span><br><span class="line">-- Build files have been written to: E:/winafl/build64</span><br></pre></td></tr></table></figure></li><li><p>打开build64目录下的<code>WinAFL.sln</code>，单击菜单&quot;&quot;生成&quot;中的<strong>生成解决方案</strong></p></li><li><p>右键右侧<strong>搜索解决方案资源管理器</strong>中的<code>afl-fuzz</code>，选择<strong>设为启动项目</strong></p></li><li><p>右键<code>afl-fuzz</code>，选择<strong>属性</strong>，将调试中的<strong>命令参数</strong>属性改为<code>-i input -o output -D E:\DynamoRIO\bin64 -t 20000 -- -coverage_module test.exe -fuzz_iterations 5000 -target_module test.exe -target_method main -nargs 2 -- test.exe @@</code></p></li><li><p>修改工作目录为<code>$(ProjectDir)bin\Debug</code></p></li><li><p>在&quot;调试属性&quot;–&gt;“C/C++”–&gt;&quot;常规&quot;中将<strong>调试信息格式</strong>属性改为<strong>用于&quot;编辑并继续&quot;的程序数据库(/ZI)</strong></p></li><li><p>在&quot;调试属性&quot;–&gt;“C/C++”–&gt;&quot;优化&quot;中将<strong>优化</strong>属性改为<strong>已禁用(/Od)</strong></p></li><li><p>在&quot;调试属性&quot;–&gt;“链接器”–&gt;&quot;调试&quot;中将<strong>生成调试信息</strong>属性改为<strong>生成调试信息(/DEBUG)</strong></p></li><li><p>重新生成解决方案</p></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;虚拟机环境配置&quot;&gt;虚拟机环境配置&lt;/h2&gt;
-&lt;blockquote&gt;
-&lt;p&gt;虚拟机系统为ubuntu 18.04.5，只安装了Python3&lt;/p&gt;
-&lt;/blockquote&gt;
-&lt;h3 id=&quot;pwntools安装&quot;&gt;pwntools安装&lt;/h3&gt;
-&lt;ol&gt;
-&lt;l</summary>
-      
-    
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/categories/work/"/>
-    
-    
-    <category term="work" scheme="https://www.ruomo.fun/tags/work/"/>
-    
-  </entry>
   
   <entry>
     <title>ubuntu18.04美化</title>
