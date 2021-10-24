@@ -6,7 +6,7 @@
   <link href="https://www.ruomo.fun/atom.xml" rel="self"/>
   
   <link href="https://www.ruomo.fun/"/>
-  <updated>2021-07-26T09:08:30.611Z</updated>
+  <updated>2021-10-24T13:42:21.664Z</updated>
   <id>https://www.ruomo.fun/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>DangerousFinder开发进度</title>
+    <link href="https://www.ruomo.fun/2021/10/24/others/DangerousFinder%E5%BC%80%E5%8F%91%E8%BF%9B%E5%BA%A6/"/>
+    <id>https://www.ruomo.fun/2021/10/24/others/DangerousFinder%E5%BC%80%E5%8F%91%E8%BF%9B%E5%BA%A6/</id>
+    <published>2021-10-24T13:39:09.924Z</published>
+    <updated>2021-10-24T13:42:21.664Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言">前言</h2><p>怎么说呢，这玩意其实就是我的毕设项目，还在开发.jpg</p><p>这边就记录下开发的进度啥的，虽然那个项目里面也有记录，但是这边偏向生活向一点。</p><p>项目地址：<a href="https://github.com/pwnlike/DangerousFinder">https://github.com/pwnlike/DangerousFinder</a></p><h2 id="开发进度">开发进度</h2><h3 id="2021-10-24">2021-10-24</h3><ol><li>创建项目，编写初始文档</li></ol><p>没错，你没看错！作为一个懒狗，我今天真的只是New了一个Project，然后写了一份中文的简单文档（？）并且用google把内容机翻成了英文，笑死。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;前言&quot;&gt;前言&lt;/h2&gt;
+&lt;p&gt;怎么说呢，这玩意其实就是我的毕设项目，还在开发.jpg&lt;/p&gt;
+&lt;p&gt;这边就记录下开发的进度啥的，虽然那个项目里面也有记录，但是这边偏向生活向一点。&lt;/p&gt;
+&lt;p&gt;项目地址：&lt;a href=&quot;https://github.com/pw</summary>
+      
+    
+    
+    
+    <category term="others" scheme="https://www.ruomo.fun/categories/others/"/>
+    
+    
+    <category term="pwn" scheme="https://www.ruomo.fun/tags/pwn/"/>
+    
+    <category term="ida" scheme="https://www.ruomo.fun/tags/ida/"/>
+    
+  </entry>
   
   <entry>
     <title>ubuntu18.04美化</title>
