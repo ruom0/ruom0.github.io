@@ -334,6 +334,81 @@
       </tags>
   </entry>
   <entry>
+    <title>温州大学自动健康打卡教程</title>
+    <url>/2021/10/31/others/%E6%B8%A9%E5%B7%9E%E5%A4%A7%E5%AD%A6%E8%87%AA%E5%8A%A8%E5%81%A5%E5%BA%B7%E6%89%93%E5%8D%A1%E6%95%99%E7%A8%8B/</url>
+    <content><![CDATA[<h2 id="前言">前言</h2>
+<p>懒鬼最爱，笑死。</p>
+<p>其实只是哥们总是记不住打卡，没办法，这事太难记住了。</p>
+<p>源代码来自TAOTAO5老哥的github项目：<a href="https://github.com/TAOTAO5/wzu_sign">wzu_sign</a></p>
+<p>本文只是咋用的教程罢了……</p>
+<p>前期准备需要有的app：</p>
+<ol>
+<li>我的温大（废话）</li>
+<li>HttpCanary（ios请自行寻找类似app）</li>
+</ol>
+<p>需要在腾讯云注册账号，并且能够使用<strong>云函数</strong>。</p>
+<h2 id="正文">正文</h2>
+<p>首先在上方老哥的项目中下载<code>main.py</code></p>
+<p>为了方式项目丢失，在文末有备份，见<a href="#%E6%BA%90%E7%A0%81%E5%A4%87%E4%BB%BD">源码备份</a></p>
+<p>接着打开HttpCanary，将目标应用设置为<strong>我的温大</strong>，如下图所示</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/other/%E6%B8%A9%E5%A4%A7%E8%87%AA%E5%8A%A8%E6%89%93%E5%8D%A1%E6%95%99%E7%A8%8B/01.jpg" alt="HttpCanary目标应用设置"></p>
+<ol>
+<li>
+<p>打开我的温大，切换到健康打卡页面，把所有内容填写好但是不要提交。</p>
+</li>
+<li>
+<p>切换回HttpCanary，点击小飞机开始抓包（记得开悬浮窗方便后续使用哈）。</p>
+</li>
+<li>
+<p>将刚才填写的问卷提交</p>
+</li>
+</ol>
+<p>此时在HttpCanary中已经抓到了相关的包了，切换回HttpCanary，会看到一大堆包，如下图所示</p>
+<p><img src="http://ruomo-blog-oss-1.oss-cn-hangzhou.aliyuncs.com/image/other/%E6%B8%A9%E5%A4%A7%E8%87%AA%E5%8A%A8%E6%89%93%E5%8D%A1%E6%95%99%E7%A8%8B/02.jpg" alt="抓到的一堆包"></p>
+<p>找到POST请求到<code>https://lightapp.wzu.edu.cn/api/questionnaire/questionnaire/addMyAnswer</code>的包，点进去，切换到<strong>请求</strong>选择卡，将以下内容填写到源码中headers相应的位置中去：</p>
+<ol>
+<li>Cookie</li>
+<li>User-Agent</li>
+<li>Referer</li>
+</ol>
+<p>先不要急着关HttpCanary！在<strong>请求</strong>选择卡中的最下面，点击<strong>预览</strong>，然后点中间的一堆东西，它会变成Json预览。这个时候点击右上角的保存按钮，它会默认保存在手机的HttpCanary/Json目录中。</p>
+<p>将这个Json目录中保存的这一份json文件不管通过什么方式，发送到电脑上。</p>
+<p>接着登录<a href="https://cloud.tencent.com/">腾讯云</a>，在右上角的搜索中搜索<strong>云函数</strong>，在搜索结果中点<strong>管理控制台</strong>跳转到云函数的管理控制台中。</p>
+<p>点击左侧的<strong>函数服务</strong>，然后点击<strong>新建</strong>按钮。</p>
+<p>在新建页面选择<strong>自定义创建</strong>，函数类型选择<strong>事件函数</strong>，名称自己随便取，地域随便，部署方式为<strong>代码部署</strong>，运行环境为<strong>Python3.6</strong>。</p>
+<p>在下方的<strong>函数代码</strong>的index.py中将你的源码拷贝进去，然后在左侧文件树右键新建文件，名字为<code>updata.json</code>，将你从手机传过来的那份json文件的内容粘贴到<code>updata.json</code>中去。</p>
+<blockquote>
+<p>PS: 这两个文件在函数代码中修改后记得Ctrl+S保存一下</p>
+</blockquote>
+<p>接着我们需要对邮件部分进行配置，在代码的send_mail函数中</p>
+<ol>
+<li><code>my_sender</code>填写自己用作发邮件的邮箱</li>
+<li><code>my_pass</code>填写授权码（有些邮箱可能直接密码就可以，QQ和163需要授权码，怎么弄自己Bing/Baidu/Google）</li>
+<li><code>my_user</code>填写自己用来接收邮件的邮箱</li>
+<li><code>msg['From']</code>中列表第一个项目改为对应发件人昵称（随便取）</li>
+<li><code>msg['To']</code>中列表第一个项目改为对应收件人昵称（随便取）</li>
+<li><code>smtplib.SMTP_SSL</code>函数第一个参数填写发件邮箱的smtp地址（163邮箱：<a href="http://smtp.163.com">smtp.163.com</a>；QQ邮箱：<a href="http://smtp.qq.com">smtp.qq.com</a>。其他的自己看下吧）</li>
+</ol>
+<p>接着点开<strong>高级配置</strong>，将执行超时时间改为<strong>20</strong>秒（这里随自己喜好，最好长一点，不然可能http提交没返回或者邮件没法出去就判定超时了）</p>
+<p>最后就是触发器的配置了，点击最下面的<strong>触发器配置</strong>，选择<strong>自定义创建</strong>，触发周期最好选择<strong>自定义触发周期</strong>，Cron具体参照手册，这里举个简单的例子：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">每天早上8点执行一次代码的Cron</span><br><span class="line">0 0 8 * * * *</span><br></pre></td></tr></table></figure>
+<p>全部搞定后点击完成按钮就可以完成创建了。</p>
+<p>创建完成后可以点进对应名称的云函数查看详细信息，如果想要进行一次测试，则可以进入函数管理 &gt;&gt; 函数代码，点击在线编辑区域的<strong>测试</strong>按钮，结果将可以在<strong>日志查询</strong>中查看。</p>
+<p>如果调用失败，可以看下具体的错误信息，一般容易碰到的就是超时了。</p>
+<p>当然调用成功也得看一下，因为可能邮件发送失败，最常见的就是<code>(550, b'User has no permission')</code>，说明授权码或者发件人邮箱错误了。</p>
+<p>某次调用成功将会出现类似如下的信息：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">START RequestId:</span><br><span class="line">Received event: &#123;</span><br><span class="line">  &quot;key1&quot;: &quot;test value 1&quot;,</span><br><span class="line">  &quot;key2&quot;: &quot;test value 2&quot;</span><br><span class="line">&#125;</span><br><span class="line">Starting new HTTPS connection (1): lightapp.wzu.edu.cn:443</span><br><span class="line">https://lightapp.wzu.edu.cn:443 &quot;POST /api/questionnaire/questionnaire/addMyAnswer HTTP/1.1&quot; 200 67</span><br><span class="line">&#123;&#x27;errcode&#x27;: 500, &#x27;errmsg&#x27;: &#x27;不能重复回答同一问卷&#x27;, &#x27;data&#x27;: &#123;&#125;&#125;</span><br><span class="line">邮件发送成功</span><br><span class="line">Response RequestId: RetMsg:null</span><br><span class="line">END RequestId:</span><br><span class="line">Report RequestId: Duration:9603ms Memory:128MB MemUsage:18.046875MB</span><br></pre></td></tr></table></figure>
+<h2 id="源码备份">源码备份</h2>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># -*- coding: utf8 -*-</span></span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> smtplib</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</span><br><span class="line"><span class="keyword">from</span> email.utils <span class="keyword">import</span> formataddr</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main_handler</span>(<span class="params">event, context</span>):</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Received event: &quot;</span> + json.dumps(event, indent=<span class="number">2</span>))</span><br><span class="line">    result = sign_in()</span><br><span class="line">    title = <span class="string">&#x27;今日健康打卡结果&#x27;</span></span><br><span class="line">    <span class="keyword">if</span> result[<span class="string">&#x27;errcode&#x27;</span>] == <span class="number">0</span>:</span><br><span class="line">        title += <span class="string">&quot;&lt;提交成功&gt;&quot;</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        title += <span class="string">&quot;&lt;提交失败&gt;&quot;</span></span><br><span class="line"></span><br><span class="line">    ret = send_mail(title, <span class="built_in">str</span>(result))</span><br><span class="line">    <span class="keyword">if</span> ret:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;邮件发送成功&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;邮件发送失败&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">sign_in</span>():</span></span><br><span class="line">    url = <span class="string">&quot;https://lightapp.wzu.edu.cn/api/questionnaire/questionnaire/addMyAnswer&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 提交的json, 自己抓包</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&#x27;updata.json&#x27;</span>, <span class="string">&#x27;rb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        payload = json.load(f)</span><br><span class="line">        payload = json.dumps(payload)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 自己抓包获得，Cookie、User-Agent、Referer需要自己填一下</span></span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">&#x27;Host&#x27;</span>: <span class="string">&#x27;lightapp.wzu.edu.cn&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Origin&#x27;</span>: <span class="string">&#x27;https://lightapp.wzu.edu.cn&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Cookie&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Content-Length&#x27;</span>: <span class="string">&#x27;0&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Connection&#x27;</span>: <span class="string">&#x27;keep-alive&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;*/*&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;User-Agent&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Referer&#x27;</span>: <span class="string">&#x27;&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Accept-Language&#x27;</span>: <span class="string">&#x27;zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7&#x27;</span>,</span><br><span class="line">        <span class="string">&#x27;Accept-Encoding&#x27;</span>: <span class="string">&#x27;gzip, deflate&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    headers[<span class="string">&#x27;Content-Length&#x27;</span>] = <span class="built_in">str</span>(<span class="built_in">len</span>(payload))</span><br><span class="line"></span><br><span class="line">    response = requests.request(</span><br><span class="line">        <span class="string">&quot;POST&quot;</span>, url, headers=headers, data=payload.encode(<span class="string">&#x27;utf-8&#x27;</span>))</span><br><span class="line"></span><br><span class="line">    responseBody = json.loads(response.text)</span><br><span class="line">    <span class="keyword">return</span> responseBody</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_mail</span>(<span class="params">title, message</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27; title:邮件标题&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27; message:邮件正文&#x27;&#x27;&#x27;</span></span><br><span class="line">    my_sender = <span class="string">&#x27;&#x27;</span>  <span class="comment"># 发件人邮箱账号</span></span><br><span class="line">    my_pass = <span class="string">&#x27;&#x27;</span>  <span class="comment"># 发件人邮箱授权码，获取方法自己百度</span></span><br><span class="line">    my_user = <span class="string">&#x27;&#x27;</span>  <span class="comment"># 收件人邮箱账号，可以发送给自己</span></span><br><span class="line">    ret = <span class="literal">True</span></span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        mail_msg = <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">            &lt;p&gt;&quot;&quot;&quot;</span> + message + <span class="string">&quot;&quot;&quot; &lt;/p&gt;</span></span><br><span class="line"><span class="string">            &quot;&quot;&quot;</span></span><br><span class="line">        msg = MIMEText(mail_msg, <span class="string">&#x27;html&#x27;</span>, <span class="string">&#x27;utf-8&#x27;</span>)</span><br><span class="line">        msg[<span class="string">&#x27;From&#x27;</span>] = formataddr(</span><br><span class="line">            [<span class="string">&quot;&quot;</span>, my_sender])  <span class="comment"># 括号里的对应发件人邮箱昵称、发件人邮箱账号</span></span><br><span class="line">        msg[<span class="string">&#x27;To&#x27;</span>] = formataddr([<span class="string">&quot;&quot;</span>,</span><br><span class="line">                                my_user])  <span class="comment"># 括号里的对应收件人邮箱昵称、收件人邮箱账号</span></span><br><span class="line">        msg[<span class="string">&#x27;Subject&#x27;</span>] = title  <span class="comment"># 邮件的主题，也可以说是标题</span></span><br><span class="line"></span><br><span class="line">        server = smtplib.SMTP_SSL(<span class="string">&quot;&quot;</span>,</span><br><span class="line">                                  <span class="number">465</span>)  <span class="comment"># 发件人邮箱中的SMTP服务器，端口是465，固定的，不能更改</span></span><br><span class="line">        server.login(my_sender,</span><br><span class="line">                     my_pass)  <span class="comment"># 括号中对应的是发件人邮箱账号、邮箱密码</span></span><br><span class="line">        server.set_debuglevel(<span class="number">1</span>)</span><br><span class="line">        server.sendmail(my_sender, [</span><br><span class="line">            my_user,</span><br><span class="line">        ], msg.as_string())  <span class="comment"># 括号中对应的是发件人邮箱账号、收件人邮箱账号、发送邮件</span></span><br><span class="line">        server.quit()  <span class="comment"># 关闭连接</span></span><br><span class="line">    <span class="keyword">except</span> Exception <span class="keyword">as</span> err:  <span class="comment"># 如果 try 中的语句没有执行，则会执行下面的 ret=False</span></span><br><span class="line">        <span class="built_in">print</span>(err)</span><br><span class="line">        ret = <span class="literal">False</span></span><br><span class="line">    <span class="keyword">return</span> ret</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>wzu</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>第2章 信息的表示和处理</title>
     <url>/2021/06/01/csapp/%E7%AC%AC2%E7%AB%A0_%E4%BF%A1%E6%81%AF%E7%9A%84%E8%A1%A8%E7%A4%BA%E5%92%8C%E5%A4%84%E7%90%86/</url>
     <content><![CDATA[<ul>
