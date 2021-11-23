@@ -38,6 +38,8 @@
 <h3 id="2021-10-24">2021-10-24</h3>
 <p>上班一直没有写博客，阿巴阿巴。</p>
 <p>今天忽然想起来要弄毕设的东西，就匆匆新建了项目，写了初始的文档（？）</p>
+<h3 id="2021-11-23">2021-11-23</h3>
+<p>Update Dangerous Finder, add checksec.</p>
 ]]></content>
       <categories>
         <category>others</category>
@@ -129,28 +131,6 @@
       </tags>
   </entry>
   <entry>
-    <title>DangerousFinder开发进度</title>
-    <url>/2021/10/24/others/DangerousFinder%E5%BC%80%E5%8F%91%E8%BF%9B%E5%BA%A6/</url>
-    <content><![CDATA[<h2 id="前言">前言</h2>
-<p>怎么说呢，这玩意其实就是我的毕设项目，还在开发.jpg</p>
-<p>这边就记录下开发的进度啥的，虽然那个项目里面也有记录，但是这边偏向生活向一点。</p>
-<p>项目地址：<a href="https://github.com/pwnlike/DangerousFinder">https://github.com/pwnlike/DangerousFinder</a></p>
-<h2 id="开发进度">开发进度</h2>
-<h3 id="2021-10-24">2021-10-24</h3>
-<ol>
-<li>创建项目，编写初始文档</li>
-</ol>
-<p>没错，你没看错！作为一个懒狗，我今天真的只是New了一个Project，然后写了一份中文的简单文档（？）并且用google把内容机翻成了英文，笑死。</p>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-      <tags>
-        <tag>pwn</tag>
-        <tag>ida</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>pwn使用指定libc运行程序</title>
     <url>/2021/06/21/others/pwn%E4%BD%BF%E7%94%A8%E6%8C%87%E5%AE%9Alibc%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F/</url>
     <content><![CDATA[<h3 id="patchelf安装">patchelf安装</h3>
@@ -178,6 +158,33 @@
       </categories>
       <tags>
         <tag>pwn</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>DangerousFinder开发进度</title>
+    <url>/2021/10/24/others/DangerousFinder%E5%BC%80%E5%8F%91%E8%BF%9B%E5%BA%A6/</url>
+    <content><![CDATA[<h2 id="前言">前言</h2>
+<p>怎么说呢，这玩意其实就是我的毕设项目，还在开发.jpg</p>
+<p>这边就记录下开发的进度啥的，虽然那个项目里面也有记录，但是这边偏向生活向一点。</p>
+<p>项目地址：<a href="https://github.com/pwnlike/DangerousFinder">https://github.com/pwnlike/DangerousFinder</a></p>
+<h2 id="开发进度">开发进度</h2>
+<h3 id="2021-10-24">2021-10-24</h3>
+<ol>
+<li>创建项目，编写初始文档</li>
+</ol>
+<p>没错，你没看错！作为一个懒狗，我今天真的只是New了一个Project，然后写了一份中文的简单文档（？）并且用google把内容机翻成了英文，笑死。</p>
+<h3 id="2021-11-23">2021-11-23</h3>
+<ol>
+<li>加了个CheckSec的功能，其实只是做测试写的（？）</li>
+<li>写了Logger类，毕竟是要输出的嘛！</li>
+</ol>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>pwn</tag>
+        <tag>ida</tag>
       </tags>
   </entry>
   <entry>
@@ -305,35 +312,6 @@
       </tags>
   </entry>
   <entry>
-    <title>用Pyenv安装多版本Python</title>
-    <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
-    <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
-<p>前提：本机已有Python以及pip</p>
-<p>打开PowerShell，输入以下命令安装</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">pip install pyenv<span class="literal">-win</span> -<span class="literal">-target</span> <span class="variable">$HOME</span>\.pyenv</span><br></pre></td></tr></table></figure>
-<p>安装完成后输入以下命令添加到环境变量</p>
-<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;PYENV&#x27;</span>,<span class="variable">$env:USERPROFILE</span> + <span class="string">&quot;\.pyenv\pyenv-win\&quot;</span>,<span class="string">&quot;User&quot;</span>)</span><br><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;path&#x27;</span>, <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\bin;&quot;</span> + <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\shims;&quot;</span> + <span class="variable">$env:Path</span>,<span class="string">&quot;User&quot;</span>)</span><br></pre></td></tr></table></figure>
-<h2 id="Pyenv常见使用方法">Pyenv常见使用方法</h2>
-<ul>
-<li><code>pyenv commands</code>：列出pyenv所有的命令</li>
-<li><code>pyenv local [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前目录以及其子目录。</li>
-<li><code>pyenv global [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令影响全局。</li>
-<li><code>pyenv shell [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前会话。</li>
-<li><code>pyenv install &lt;version&gt;</code>：安装某个版本的Python。</li>
-<li><code>pyenv install -l</code>：列出所有可安装的Python版本。</li>
-<li><code>pyenv uninstall &lt;version&gt;</code>：卸载某个版本的Python。</li>
-<li><code>pyenv version</code>：列出当前正在使用的Python版本以及其文件所在目录。</li>
-<li><code>pyenv versions</code>：列出所有已安装的Python版本以及其文件所在目录。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>others</category>
-      </categories>
-      <tags>
-        <tag>pyenv</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>温州大学自动健康打卡教程</title>
     <url>/2021/10/31/others/%E6%B8%A9%E5%B7%9E%E5%A4%A7%E5%AD%A6%E8%87%AA%E5%8A%A8%E5%81%A5%E5%BA%B7%E6%89%93%E5%8D%A1%E6%95%99%E7%A8%8B/</url>
     <content><![CDATA[<h2 id="前言">前言</h2>
@@ -406,6 +384,35 @@
       </categories>
       <tags>
         <tag>wzu</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>用Pyenv安装多版本Python</title>
+    <url>/2021/06/02/others/%E7%94%A8pyenv%E8%A3%85%E5%A4%9A%E7%89%88%E6%9C%ACPython/</url>
+    <content><![CDATA[<h2 id="Windows环境配置">Windows环境配置</h2>
+<p>前提：本机已有Python以及pip</p>
+<p>打开PowerShell，输入以下命令安装</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">pip install pyenv<span class="literal">-win</span> -<span class="literal">-target</span> <span class="variable">$HOME</span>\.pyenv</span><br></pre></td></tr></table></figure>
+<p>安装完成后输入以下命令添加到环境变量</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;PYENV&#x27;</span>,<span class="variable">$env:USERPROFILE</span> + <span class="string">&quot;\.pyenv\pyenv-win\&quot;</span>,<span class="string">&quot;User&quot;</span>)</span><br><span class="line">[<span class="type">System.Environment</span>]::SetEnvironmentVariable(<span class="string">&#x27;path&#x27;</span>, <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\bin;&quot;</span> + <span class="variable">$HOME</span> + <span class="string">&quot;\.pyenv\pyenv-win\shims;&quot;</span> + <span class="variable">$env:Path</span>,<span class="string">&quot;User&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Pyenv常见使用方法">Pyenv常见使用方法</h2>
+<ul>
+<li><code>pyenv commands</code>：列出pyenv所有的命令</li>
+<li><code>pyenv local [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前目录以及其子目录。</li>
+<li><code>pyenv global [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令影响全局。</li>
+<li><code>pyenv shell [&lt;version&gt;]</code>：无version参数则显示当前使用的版本，有version参数则设置使用的版本。该命令只影响当前会话。</li>
+<li><code>pyenv install &lt;version&gt;</code>：安装某个版本的Python。</li>
+<li><code>pyenv install -l</code>：列出所有可安装的Python版本。</li>
+<li><code>pyenv uninstall &lt;version&gt;</code>：卸载某个版本的Python。</li>
+<li><code>pyenv version</code>：列出当前正在使用的Python版本以及其文件所在目录。</li>
+<li><code>pyenv versions</code>：列出所有已安装的Python版本以及其文件所在目录。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>others</category>
+      </categories>
+      <tags>
+        <tag>pyenv</tag>
       </tags>
   </entry>
   <entry>
